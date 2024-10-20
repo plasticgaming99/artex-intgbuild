@@ -1,0 +1,33 @@
+packagename = cmake
+version = 3.31.0-rc2
+license = BSD 3-Clause
+architecture = x86_64
+description = Cross-platform OSS Make system
+source = https://github.com/Kitware/CMake/releases/download/v3.31.0-rc2/cmake-$pkgver.tar.gz
+
+depends = curl
+depends = libarchive
+depends = libuv
+depends = nghttp2
+
+builddeps = bsdmake
+
+build:
+export CFLAGS=-O2 -march=x86-64-v2 -pipe -rtlib=compiler-rt -unwindlib=libgcc
+export CXXFLAGS=-O2 -march=x86-64-v2 -pipe -rtlib=compiler-rt -unwindlib=libgcc -stdlib=libc++
+export CC=clang
+export CXX=clang++
+export LD=ld.lld
+export MAKEFLAGS=-j8
+cd $srcdir
+bsdtar -xvf cmake-$pkgver.tar.gz
+cd cmake-$pkgver
+zsh -c ./bootstrap --prefix=$pkgdir/usr
+bmake
+:end build
+
+package:
+cd $srcdir/coreutils-$pkgver
+export DESTDIR=$pkgdir/usr
+fakeroot bmake install
+:end package

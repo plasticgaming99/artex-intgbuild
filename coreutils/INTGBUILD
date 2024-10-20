@@ -1,0 +1,29 @@
+// just a demo
+packagename = coreutils
+version = git
+license = MIT
+architecture = x86_64
+description = Cross-platform Coreutils reimplemention in Rust
+source = https://github.com/uutils/coreutils.git
+
+depends = musl
+
+builddeps = rust
+builddeps = cargo
+
+build:
+export CC=clang
+export CFLAGS=-O2 -march=x86-64-v2 -pipe
+export RUSTFLAGS=-C opt-level=2 -C target-cpu=x86-64-v2
+cd $srcdir/coreutils
+cargo build --release --target x86_64-unknown-linux-musl --features feat_os_unix_musl
+:end build
+
+package:
+cd $srcdir/coreutils
+install -Dm755 $srcdir/coreutils/target/x86_64-unknown-linux-musl/release/coreutils $pkgdir/usr/bin/coreutils
+install -Dm644 $srcdir/coreutils/LICENSE $pkgdir/usr/share/licenses/uu-coreutils/LICENSE
+
+cd $pkgdir/usr/bin
+zsh -c "./coreutils --list | xargs -L 1 ln -sf -T coreutils "
+:end package

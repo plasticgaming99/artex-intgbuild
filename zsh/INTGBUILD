@@ -1,0 +1,54 @@
+packagename = zsh
+version = git
+license = cutson
+architecture = x86_64
+description = very powerful shell
+url = https://www.zsh.org/
+source = https://github.com/zsh-users/zsh.git
+
+depends = pcre2
+depends = libcap
+
+builddeps = pcre2
+builddeps = libcap
+builddeps = yodl
+
+build:
+cd $srcdir/zsh
+git checkout zsh-5.9
+
+export CC=clang
+export CXX=clang++
+export LD=ld.lld
+export AR=llvm-ar
+export NM=llvm-nm
+export RANLIB=llvm-ranlib
+export STRIP=llvm-strip
+export OBJCOPY=llvm-objcopy
+export OBJDUMP=llvm-objdump
+
+export CFLAGS=-O2 -march=x86-64-v2 -pipe -rtlib=compiler-rt -unwindlib=libgcc -fuse-ld=lld -static
+export LDFLAGS=-Wl,--as-needed,-O1
+export MAKEFLAGS=-j8
+// just bootstrap with arch, artex is not independent
+zsh -c "./Util/preconfig"
+zsh -c "./configure --prefix=/usr \
+    --docdir=/usr/share/doc/zsh \
+    --mandir=/usr/share/man \
+    --bindir=/usr/bin \
+    --infodir=/usr/share/indo \
+    --enable-etcdir=/etc/zsh \
+    --enable-function-subdirs \
+    --enable-cap \
+    --enable-pcre \
+    --enable-gdbm \
+    --enable-readnullcmd=pager"
+bmake
+:end build
+
+package:
+cd $srcdir/code
+export DESTDIR=$pkgdir
+fakeroot bmake install
+install -Dm644 $srcdir/zsh/LICENCE $pkgdir/usr/share/licenses/zsh/LICENCE
+:end package

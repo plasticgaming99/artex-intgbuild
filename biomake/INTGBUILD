@@ -1,0 +1,18 @@
+packagename = biomake
+version = git
+license = BSD 3-Clause
+architecture = x86_64
+description = GNU Make alternative with great extention
+source = https://github.com/evoldoers/biomake.git
+
+depends = swi-prolog
+
+build:
+cd $srcdir/biomake
+bmake -j8
+:end build
+
+package:
+cd $srcdir/biomake
+export DESTDIR=$pkgdir/usr
+bake install

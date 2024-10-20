@@ -1,0 +1,19 @@
+packagename = ncurses
+version = git
+license = MIT
+architecture = x86_64
+description = curses emulation library
+source = https://github.com/ThomasDickey/ncurses-snapshots.git
+
+build:
+cd $srcdir/ncurses-snapshots
+mkdir -p build
+cd build
+../configure --prefix=$pkgdir/usr --with-shared --with-cxx-shared
+make -j8
+:end build
+
+package:
+export DESTDIR=$pkgdir
+make install
+:end package
