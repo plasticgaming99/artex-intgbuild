@@ -27,7 +27,7 @@ bmake
 :end build
 
 package:
-cd $srcdir/coreutils-$pkgver
+cd $srcdir/cmake-$pkgver
 export DESTDIR=$pkgdir/usr
-fakeroot bmake install
+bmake install
 :end package

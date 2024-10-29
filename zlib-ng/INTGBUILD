@@ -1,0 +1,24 @@
+packagename = zlib-ng
+version = git
+license = Zlib
+architecture = x86_64
+description = (Un)Compression library new generation
+source = https://github.com/zlib-ng/zlib-ng.git
+
+builddeps = cmake
+builddeps = ninja
+builddeps = git
+
+build:
+cd $srcdir/zlib-ng
+mkdir -p build
+cd build
+cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DWITH_GTEST=OFF
+ninja
+:end build
+
+package:
+cd $srcdir/zlib-ng/build
+export DESTDIR=$pkgdir
+ninja install
+:end package

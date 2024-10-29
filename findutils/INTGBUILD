@@ -3,6 +3,7 @@ version = git
 license = MIT
 architecture = x86_64
 description = Cross-platform Fineutils reimplemention in Rust
+url = https://uutils.github.io/
 source = https://github.com/uutils/findutils.git
 
 depends = musl

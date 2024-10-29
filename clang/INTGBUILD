@@ -1,0 +1,36 @@
+packagename = clang
+version = 19.1.2
+license = Apache-v2.0 with LLVM Exceptions
+architecture = x86_64
+url = https://llvm.org
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/clang-$pkgver.src.tar.xz
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/clang-tools-extra-$pkgver.src.tar.xz
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-$pkgver.src.tar.xz
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/cmake-$pkgver.src.tar.xz
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/third-party-$pkgver.src.tar.xz
+
+build:
+cd $srcdir
+tar -xf clang-$pkgver.src.tar.xz
+tar -xf clang-tools-extra-$pkgver.src.tar.xz
+tar -xf llvm-$pkgver.src.tar.xz
+tar -xf cmake-$pkgver.src.tar.xz
+tar -xf third-party-$pkgver.src.tar.xz
+mv -n cmake-$pkgver.src cmake
+mv -n third-party-$pkgver.src third-party
+cd $srcdir/clang-$pkgver.src
+mkdir -p build
+mv -n $srcdir/clang-tools-extra-$pkgver.src $srcdir/clang-$pkgver.src/tools/extra
+2to3 -wn --no-diffs tools/extra/clang-include-fixer/find-all-symbols/tool/run-find-all-symbols.py
+cd build
+cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLVM_INCLUDE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_DOCDIR=share/doc -DCMAKE_SKIP_RPATH=ON -DCLANG_DEFAULT_PIE_ON_LINUX=ON -DCLANG_LINK_CLANG_DYLIB=ON -DENABLE_LINKER_BUILD_ID=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_EXTERNAL_LIT=/usr/bin/lit -DLLVM_MAIN_SRC_DIR=$srcdir/llvm-$pkgver.src
+
+ninja
+:end build
+
+package:
+cd $srcdir/clang-$pkgver.src/build
+export DESTDIR=$pkgdir
+ninja install
+install -Dm644 ../LICENSE.TXT "$pkgdir/usr/share/licenses/$pkgname/LICENSE
+:end package

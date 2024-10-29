@@ -3,6 +3,7 @@ version = git
 license = MIT
 architecture = x86_64
 description = curses emulation library
+url = https://invisible-island.net/ncurses/
 source = https://github.com/ThomasDickey/ncurses-snapshots.git
 
 build:
@@ -14,6 +15,7 @@ make -j8
 :end build
 
 package:
+cd $srcdir/ncurses-snapshots/build
 export DESTDIR=$pkgdir
 make install
 :end package

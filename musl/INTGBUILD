@@ -3,6 +3,7 @@ version = 1.2.5
 license = MIT
 architecture = x86_64
 description = An Efficient standard c library.
+url = https://musl.libc.org
 source = https://musl.libc.org/releases/musl-$pkgver.tar.gz
 
 build:
