@@ -1,0 +1,28 @@
+packagename = xz
+version = 5.6.3
+description = Library and Command-line tools for xz and LZMA
+architecture = x86_64
+url = https://tukaani.org/xz/
+license = GPL, LGPL, Custom
+
+source = https://github.com/tukaani-project/xz.git
+
+depends = sh
+builddeps = git
+builddeps = po4a
+builddeps = ninja
+provides = liblzma
+
+build:
+cd $srcdir/xz
+cmake . -G Ninja -DCMAKE_INSTALL_PREFIX=/usr
+ninja
+:end build
+
+package:
+cd $srcdir/xz
+export DESTDIR=$pkgdir
+ninja install
+install -dm755 $srcdir/xz/LICENSE $pkgdir/usr/share/licenses/xz/
+ln -sf /usr/share/doc/xz/COPYING $pkgdir/usr/share/licenses/xz/COPYING
+:end package

@@ -1,0 +1,24 @@
+packagename = libffi
+version = 3.4.6
+license = MIT
+architecture = x86_64
+description = Portable foreign-function interface library
+
+source = https://github.com/libffi/libffi/releases/download/v3.4.6/libffi-$pkgver.tar.gz
+
+build:
+export PREFIX=/usr
+cd $srcdir
+tar -xf libffi-$pkgver.tar.gz
+cd libffi-$pkgver
+zsh -c "./configure --prefix=/usr --libdir=/usr/lib --target=x86_64-unknown-linux-musl --disable-multi-os-directory"
+make
+:end build
+
+package:
+cd $srcdir/libffi-$pkgver
+export DESTDIR=$pkgdir
+make install
+install -Dm 644 LICENSE -t "$pkgdir"/usr/share/licenses/$pkgname
+install -Dm 644 README.md -t "$pkgdir"/usr/share/doc/$pkgname
+:end package

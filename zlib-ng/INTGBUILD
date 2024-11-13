@@ -13,7 +13,7 @@ build:
 cd $srcdir/zlib-ng
 mkdir -p build
 cd build
-cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DWITH_GTEST=OFF
+cmake .. -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_LINKER=ld.lld -DCMAKE_INSTALL_PREFIX=/usr -DWITH_GTEST=OFF
 ninja
 :end build
 

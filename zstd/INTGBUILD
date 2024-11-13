@@ -1,0 +1,30 @@
+packagename = zstd
+version = 1.5.6
+description = Fast real-time compression algorithm
+url = https://facebook.github.io/zstd
+architectire = x86_64
+license = BSD-3-Clause, GPL-2 Only
+
+depends = zlib
+depends = xz
+depends = lz4
+
+builddeps = cmake
+builddeps = ninja
+
+source = https://github.com/facebook/zstd/releases/download/v$pkgver/zstd-$pkgver.tar.zst
+
+build:
+cd $srcdir
+tar -xf zstd-$pkgver.tar.zst
+cd zstd-$pkgver
+cmake build/cmake -G Ninja -DCMAKE_BUILD_TYPE=None -DCMAKE_INSTALL_PREFIX=/usr -DZSTD_ZLIB_SUPPORT=ON -DZSTD_LZMA_SUPPORT=ON -DZSTD_LZ4_SUPPORT=ON -DZSTD_PROGRAMS_LINK_SHARED=ON
+cmake --build build
+:end build
+
+package:
+cd $srcdir/zstd-$pkgver
+export DESTDIR=$pkgdir
+cmake --install build
+install -Dm 644 LICENSE -t $pkgdir/usr/share/licenses/zstd
+:end package

@@ -1,0 +1,19 @@
+packagename = libatomic-chimera
+version = git
+license = Apache-2.0
+architecture = x86_64
+description = GCC libatomic replacement
+url = https://github.com/chimera-linux/libatomic-chimera
+source = https://github.com/chimera-linux/libatomic-chimera.git
+
+build:
+cd $srcdir/libatomic-chimera
+export PREFIX=/usr
+make
+:end build
+
+package:
+cd $srcdir/libatomic-chimera
+export DESTDIR=$pkgdir
+make install
+:end package

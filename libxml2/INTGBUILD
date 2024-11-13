@@ -1,0 +1,29 @@
+packagename = libxml2
+version = 2.13.4-1
+license = MIT
+description = XML C parser and toolkit
+url = https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home
+source = https://gitlab.gnome.org/GNOME/libxml2.git
+
+depends = icu
+depends = ncurses
+depends = xz
+depends = zlib
+
+builddeps = git
+builddeps = python
+
+builddeps = cmake
+builddeps = ninja
+
+build:
+cd $srcdir/libxml2
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DLIBXML2_WITH_HISTORY=ON -DLIBXML2_WITH_LEGACY=ON -DLLVM_WITH_ICU=ON -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PYTHON=/usr/bin/python -DLIBXML2_WITH_THREADS=ON
+:end build
+
+package:
+cd $srcdir/libxml2
+export DESTDIR=$pkgdir
+ninja install
+install -Dm644 Copyright -t $pkgdir/usr/share/licenses/libxml2
+:end package

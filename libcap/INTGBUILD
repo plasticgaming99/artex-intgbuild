@@ -1,0 +1,20 @@
+packagename = libcap
+version = 2.71
+description = a
+source = https://git.kernel.org/pub/scm/libs/libcap/libcap.git
+license = BSD-3 Clause or GPL-2.0 Only
+
+build:
+cd $srcdir/libcap
+export CC=clang
+sed -i s/gcc/clang/g Makefile
+sed -i s/gcc/clang/g Make.Rules
+make prefix=usr sbindir=bin lib=lib KERNEL_HEADERS=/usr/include CC=clang AR=llvm-ar OBJCOPY=llvm-objcopy RANLIB=llvm-ranlib
+:end build
+
+package:
+cd $srcdir/libcap
+export DESTDIR=$pkgdir
+make install
+:end package
+

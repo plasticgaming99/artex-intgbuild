@@ -17,7 +17,7 @@ mv -n third-party-$pkgver.src third-party
 cd $srcdir/llvm-$pkgver.src
 mkdir -p build
 cd build
-cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_DOCDIR=share/doc -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=ON -DLLVM_BINUTILS_INCDIR=/usr/include -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_LINK_LLVM_DYLIB=ON -DCMAKE_CROSSCOMPILING=True -DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-unknown-linux-musl
+cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DLIBCXXABI_USE_LLVM_UNWINDER=ON -DCMAKE_INSTALL_DOCDIR=share/doc -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=ON -DLLVM_BINUTILS_INCDIR=/usr/include -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_LINK_LLVM_DYLIB=ON -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_RTTI=ON -DCMAKE_CROSSCOMPILING=True -DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-unknown-linux-musl
 ninja
 :end build
 
@@ -39,5 +39,5 @@ zsh -c "install -d $pkgdir/usr/lib"
 zsh -c "cp -P $srcdir/lib{LLVM,LTO,Remarks}*.so* $srcdir/LLVMgold.so $pkgdir/usr/lib/"
 install -d $pkgdir/usr/lib/bfd-plugins
 ln -s ../LLVMgold.so $pkgdir/usr/lib/bfd-plugins/LLVMgold.so
-install -Dm644 $srcdir/llvm-$pkgver.src/LICENSE.TXT $pkgdir/usr/share/licenses/$pkgname/LICENSE
+install -Dm644 $srcdir/llvm-$pkgver.src/LICENSE.TXT $pkgdir/usr/share/licenses/llvm-lib/LICENSE
 :end package

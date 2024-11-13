@@ -1,0 +1,23 @@
+packagename = gcompat
+version = git
+license = NCSA
+architecture = x86_64
+source = https://git.adelielinux.org/adelie/gcompat.git
+
+depends = musl
+builddeps = mold
+
+build:
+export CC=musl-clang
+export LD=musl-clang
+export CFLAGS=-O2
+export LDFLAGS=-fuse-ld=mold
+cd $srcdir/gcompat
+make -j1 LINKER_PATH=/lib/ld-musl-x86_64.so.1 LOADER_NAME=ld-linux-x86-64.so.2
+:end build
+
+package:
+cd $srcdir/gcompat
+export DESTDIR=$pkgdir/usr
+make install LINKER_PATH=/lib/ld-musl-x86_64.so.1 LOADER_NAME=ld-linux-x86-64.so.2
+:end package
