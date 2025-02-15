@@ -1,10 +1,6 @@
-packagename = llvm
-packagename = llvm-libs
-packagename = clang
-packagename = lld
 packagename = compiler-rt
 
-version = 19.1.3
+version = 19.1.7
 source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
 
 build:
@@ -17,38 +13,75 @@ export LDFLAGS=-O1 -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,-O1,
 cd $srcdir
 bsdtar -xvkf llvm-project-$pkgver.src.tar.xz
 cd llvm-project-$pkgver.src
+cd compiler-rt
 mkdir -p build
 cd build
-cmake ../llvm -G Ninja -DLLVM_TARGET_TRIPLE=x86_64-pc-linux-musl -DLLVM_ENABLE_PROJECTS=llvm;clang;lld;compiler-rt -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_LINKER=ld.lld -DLLVM_ENABLE_LIBCXX=ON -DLLVM_ENABLE_COMPILER_RT=ON -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_PIC=ON -DCMAKE_SKIP_RPATH=ON -DLLVM_INCLUDE_TESTS=OFF -DLLVM_INCLUDE_BENCHMARKS=OFF -DCLANG_DEFAULT_PIE_ON_LINUX=ON -DCLANG_DEFAULT_CXX_STDLIB=libc++ -DCLANG_DEFAULT_RTLIB=compiler-rt -DLLVM_ENABLE_BINDINGS=OFF -DLLVM_INSTALL_UTILS=OFF -DLLVM_BINUTILS_INCDIR=/usr/include -DLLVM_BUILD_LLVM_DYLIB=ON -Wno-dev
-ninja all
+cmake ../ -G Ninja \
+-DCMAKE_BUILD_TYPE=Release \
+-DLLVM_TARGET_TRIPLE=x86_64-unknown-linux-musl \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
+-DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+-DCOMPILER_RT_BUILD_ORC=OFF \
+-DCMAKE_SKIP_RPATH=ON \
+-Wno-dev
+samu all
 :end build
 
-package llvm:
-description = Compiler infrastructure
-depends = llvm-libs
-
+package:
 cd $srcdir/llvm-project-$pkgver.src/build
 export DESTDIR=$pkgdir
-ninja install-LLVM
-ninja install-llvm-libraries
-:end package
-
-package llvm-libs:
-description = LLVM Libraries
-
-cd $srcdir/llvm-project-$pkgver.src/llvm
-zsh -c "install -d $pkgdir/usr/lib"
-zsh -c "cp -P $srcdir/lib{LLVM,LTO,Remarks}*.so* $srcdir/LLVMgold.so $pkgdir/usr/lib/"
-install -d $pkgdir/usr/lib/bfd-plugins
-ln -s ../LLVMgold.so $pkgdir/usr/lib/bfd-plugins/LLVMgold.so
-install -Dm644 $srcdir/llvm-$pkgver.src/LICENSE.TXT $pkgdir/usr/share/licenses/$pkgname/LICENSE
-:end package
-
-package clang:
-:end package
-
-package lld:
-:end package
-
-package compiler-rt:
+samu install-hwasan
+samu install-clang_rt.asan-dynamic-x86_64
+samu install-clang_rt.asan-preinit-x86_64
+samu install-clang_rt.asan-x86_64
+samu install-clang_rt.asan_cxx-x86_64
+samu install-clang_rt.asan_static-x86_64
+samu install-clang_rt.builtins-x86_64
+samu install-clang_rt.cfi-x86_64
+samu install-clang_rt.cfi_diag-x86_64
+samu install-clang_rt.crtbegin-x86_64
+samu install-clang_rt.crtend-x86_64
+samu install-clang_rt.ctx_profile-x86_64
+samu install-clang_rt.dd-x86_64
+samu install-clang_rt.dfsan-x86_64
+samu install-clang_rt.dyndd-dynamic-x86_64
+samu install-clang_rt.hwasan-dynamic-x86_64
+samu install-clang_rt.hwasan-preinit-x86_64
+samu install-clang_rt.hwasan-x86_64
+samu install-clang_rt.hwasan_aliases-dynamic-x86_64
+samu install-clang_rt.hwasan_aliases-x86_64
+samu install-clang_rt.hwasan_aliases_cxx-x86_64
+samu install-clang_rt.lsan-x86_64
+samu install-clang_rt.memprof-dynamic-x86_64
+samu install-clang_rt.memprof-preinit-x86_64
+samu install-clang_rt.memprof-x86_64
+samu install-clang_rt.memprof_cxx-x86_64
+samu install-clang_rt.msan-x86_64
+samu install-clang_rt.msan_cxx-x86_64
+samu install-clang_rt.nsan-dynamic-x86_64
+samu install-clang_rt.nsan-x86_64
+samu install-clang_rt.profile-x86_64
+samu install-clang_rt.rtsan-x86_64
+samu install-clang_rt.safestack-x86_64
+samu install-clang_rt.scudo_standalone-dynamic-x86_64
+samu install-clang_rt.scudo_standalone-x86_64
+samu install-clang_rt.scudo_standalone_cxx-x86_64
+samu install-clang_rt.stats-x86_64
+samu install-clang_rt.stats_client-x86_64
+samu install-clang_rt.tsan-dynamic-x86_64
+samu install-clang_rt.tsan-x86_64
+samu install-clang_rt.tsan_cxx-x86_64
+samu install-clang_rt.ubsan_minimal-dynamic-x86_64
+samu install-clang_rt.ubsan_minimal-x86_64
+samu install-clang_rt.ubsan_standalone-dynamic-x86_64
+samu install-clang_rt.ubsan_standalone-x86_64
+samu install-clang_rt.ubsan_standalone_cxx-x86_64
+samu install-clang_rt.xray-basic-x86_64
+samu install-clang_rt.xray-fdr-x86_64
+samu install-clang_rt.xray-profiling-x86_64
+samu install-clang_rt.xray-x86_64
+samu install-compiler-rt
+samu install-compiler-rt-headers
+//mv $pkgdir/usr/lib/clang/19/lib/x86_64-unknown-linux-gnu $pkgdir/usr/lib/clang/19/lib/linux
 :end package

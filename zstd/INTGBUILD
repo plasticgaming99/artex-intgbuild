@@ -18,13 +18,19 @@ build:
 cd $srcdir
 tar -xf zstd-$pkgver.tar.zst
 cd zstd-$pkgver
-cmake build/cmake -G Ninja -DCMAKE_BUILD_TYPE=None -DCMAKE_INSTALL_PREFIX=/usr -DZSTD_ZLIB_SUPPORT=ON -DZSTD_LZMA_SUPPORT=ON -DZSTD_LZ4_SUPPORT=ON -DZSTD_PROGRAMS_LINK_SHARED=ON
-cmake --build build
+cmake build/cmake -G Ninja \
+-DCMAKE_BUILD_TYPE=None \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DZSTD_ZLIB_SUPPORT=ON \
+-DZSTD_LZMA_SUPPORT=ON \
+-DZSTD_LZ4_SUPPORT=ON \
+-DZSTD_PROGRAMS_LINK_SHARED=ON
+samu all
 :end build
 
 package:
 cd $srcdir/zstd-$pkgver
 export DESTDIR=$pkgdir
-cmake --install build
+samu install
 install -Dm 644 LICENSE -t $pkgdir/usr/share/licenses/zstd
 :end package

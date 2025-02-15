@@ -20,4 +20,6 @@ package:
 cd $srcdir/gcompat
 export DESTDIR=$pkgdir/usr
 make install LINKER_PATH=/lib/ld-musl-x86_64.so.1 LOADER_NAME=ld-linux-x86-64.so.2
+
+install -Dm644 $srcdir/gcompat/LICENSE $pkgdir/usr/share/licenses/gcompat/LICENSE
 :end package

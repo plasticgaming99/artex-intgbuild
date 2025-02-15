@@ -15,14 +15,16 @@ provides = liblzma
 
 build:
 cd $srcdir/xz
-cmake . -G Ninja -DCMAKE_INSTALL_PREFIX=/usr
-ninja
+cmake . -G Ninja \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DBUILD_SHARED_LIBS=ON
+samu
 :end build
 
 package:
 cd $srcdir/xz
 export DESTDIR=$pkgdir
-ninja install
+samu install
 install -dm755 $srcdir/xz/LICENSE $pkgdir/usr/share/licenses/xz/
 ln -sf /usr/share/doc/xz/COPYING $pkgdir/usr/share/licenses/xz/COPYING
 :end package

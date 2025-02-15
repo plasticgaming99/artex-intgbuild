@@ -1,4 +1,4 @@
-packagename = libatomic-chimera
+packagename = chimera-libatomic
 version = git
 license = Apache-2.0
 architecture = x86_64
@@ -16,4 +16,6 @@ package:
 cd $srcdir/libatomic-chimera
 export DESTDIR=$pkgdir
 make install
+
+install -Dm644 $srcdir/libatomic-chimera/LICENSE.txt $pkgdir/usr/share/licenses/chimera-libatomic/LICENSE.txt
 :end package

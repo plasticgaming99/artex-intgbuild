@@ -13,7 +13,10 @@ build:
 cd $srcdir/zlib-ng
 mkdir -p build
 cd build
-cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DWITH_GTEST=OFF -DZLIB_COMPAT=ON
+cmake .. -G Ninja \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DWITH_GTEST=OFF \
+-DZLIB_COMPAT=ON
 ninja
 :end build
 
@@ -21,4 +24,6 @@ package:
 cd $srcdir/zlib-ng/build
 export DESTDIR=$pkgdir
 ninja install
+
+install -Dm644 $srcdir/zlib-ng/LICENSE.md $pkgdir/usr/share/licenses/zlib-ng-compat/LICENSE.md
 :end package

@@ -1,6 +1,6 @@
 packagename = zsh
 version = git
-license = cutson
+license = custom
 architecture = x86_64
 description = very powerful shell
 url = https://www.zsh.org/
@@ -14,24 +14,79 @@ builddeps = libcap
 builddeps = yodl
 
 build:
+//tar -xf zsh-zsh-$pkgver.tar.gz
+//cd $srcdir/zsh-zsh-$pkgver
 cd $srcdir/zsh
-git checkout zsh-5.9
 
-export CC=clang
-export LD=ld.lld
-export AR=llvm-ar
-export NM=llvm-nm
-export RANLIB=llvm-ranlib
-export STRIP=llvm-strip
-export OBJCOPY=llvm-objcopy
-export OBJDUMP=llvm-objdump
+sed "s#\s*Completion/$_fpath/\*/\*##g" -i Src/Zle/complete.mdd
 
-export CFLAGS=-O3 -march=x86-64-v2 -pipe -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind
-export LDFLAGS=-Wl,--as-needed,-O3
-export MAKEFLAGS=-j8
-// just bootstrap with arch, artex is not independent
-zsh ./Util/preconfig
-./configure --prefix=/usr --docdir=/usr/share/doc/zsh --mandir=/usr/share/man --bindir=/usr/bin --infodir=/usr/share/indo --enable-etcdir=/etc/zsh --enable-function-subdirs --enable-cap --enable-pcre --enable-gdbm --enable-readnullcmd=pager --target=x86_64-unknown-linux-musl
+export CFLAGS+= -I~/artex-intgbuild/netbsd-curses/package/usr/include
+export LDFLAGS+= -L~/artex-intgbuild/netbsd-curses/package/usr/lib
+
+export CFLAGS-=-ffunction-sections
+export CFLAGS-=-fdata-sections
+export CFLAGS-=-Wl,--icf=all--gc-sections
+export CFLAGS-=-faddrsig
+export LDFLAGS-=-ffunction-sections
+export LDFLAGS-=-fdata-sections
+export LDFLAGS-=-Wl,--icf=all,--gc-sections
+export LDFLAGS-=-faddrsig
+
+export CFLAGS+= -fcs-profile-generate -fprofile-update=atomic -Wno-implicit-function-declaration -mllvm -vp-counters-per-site=2048
+export LDFLAGS+= -fcs-profile-generate -fprofile-update=atomic -Wno-implicit-function-declaration -mllvm -vp-counters-per-site=2048 -Wl,-mllvm,-vp-counters-per-site=2048
+
+// just bootstrap with alpine, artex is not independent
+zsh Util/preconfig
+./configure --prefix=/usr CC=clang CXX=clang++ LD=ld.lld \
+--docdir=/usr/share/doc/zsh \
+--bindir=/usr/bin \
+--infodir=/usr/share/indo \
+--enable-etcdir=/etc/zsh \
+--enable-function-subdirs \
+--enable-fndir=/usr/share/zsh/functions \
+--enable-scriptdir=/usr/share/zsh/scripts \
+--enable-cap \
+--enable-pcre \
+--enable-gdbm \
+--enable-multibyte \
+--with-tcsetpgrp \
+--enable-readnullcmd=pager
+
+make
+cd Test
+export ZTST_CONTINUE=1
+zsh -c "make test || true"
+cd ..
+
+export CFLAGS-=-fcs-profile-generate -fprofile-update=atomic
+export CFLAGS-=-mllvm -vp-counters-per-site=2048
+export LDFLAGS-=-fcs-profile-generate -fprofile-update=atomic
+export LDFLAGS-=-mllvm -vp-counters-per-site=2048
+export CFLAGS+=-fprofile-use
+export LDFLAGS+=-fprofile-use
+
+zsh -c "find . -name '*.profraw' | xargs -i llvm-profdata merge -sparse {} -o {}.profdata"
+zsh -c "llvm-profdata merge *.profdata -o default.profdata"
+cp default.profdata Src/
+cp default.profdata Src/Zle
+cp default.profdata Src/Modules
+cp default.profdata Src/Builtins
+make clean
+./configure --prefix=/usr \
+--docdir=/usr/share/doc/zsh \
+--bindir=/usr/bin \
+--infodir=/usr/share/indo \
+--enable-etcdir=/etc/zsh \
+--enable-function-subdirs \
+--enable-fndir=/usr/share/zsh/functions \
+--enable-scriptdir=/usr/share/zsh/scripts \
+--enable-cap \
+--enable-pcre \
+--enable-gdbm \
+--enable-multibyte \
+--with-tcsetpgrp \
+--enable-readnullcmd=pager
+
 make
 :end build
 

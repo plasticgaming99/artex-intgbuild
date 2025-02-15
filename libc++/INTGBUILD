@@ -1,6 +1,6 @@
 packagename = libc++
 packagename = libc++abi
-version = 19.1.3
+version = 19.1.7
 description =  LLVM C++ standard lib
 url = https://libcxx.llvm.org
 license = Apache 2.0 With LLVM Exceptions
@@ -8,24 +8,48 @@ architecture = x86_64
 
 source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
 
+depends = llvm-libunwind
+
 build:
+export CFLAGS=-O2 -march=x86-64-v2 -mtune=generic -pipe
+export CXXFLAGS=-O2 -march=x86-64-v2 -mtune=generic -pipe
+export LDFLAGS=-O1
 cd $srcdir
+bsdtar -xkf llvm-project-$pkgver.src.tar.xz
+zsh -c "sed -i 's/CREDITS.TXT/CREDITS/' $srcdir/llvm-project-$pkgver.src/libcxx{,abi}/LICENSE.TXT"
+cd llvm-project-$pkgver.src
 mkdir -p build
-tar -xf llvm-project-$pkgver.src.tar.xz
-zsh -c "sed -i 's/CREDITS.TXT/CREDITS/' llvm-project-$pkgver.src/libcxx{,abi}/LICENSE.TXT"
 cd build
-cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;libunwind -DLLVM_ENABLE_PIC=ON -DLIBCXX_INSTALL_MODULES=ON -DLIBCXX_ABI_USE_LLVM_UNWINDER=ON ../llvm-project-$pkgver.src/runtimes
-ninja cxx cxxabi
+cmake -G Ninja ../runtimes \
+-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;libunwind \
+-DLLVM_RUNTIME_TRIPLE=x86_64-pc-linux-musl \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
+-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
+-DLLVM_ENABLE_SPHINX=OFF \
+-DLLVM_ENABLE_FFI=ON \
+-DLLVM_ENABLE_RTTI=ON \
+-DLLVM_ENABLE_PIC=ON \
+-DLLVM_ENABLE_LLD=ON \
+-DLIBCXXABI_ENABLE_STATIC=ON \
+-DLIBCXXABI_ENABLE_SHARED=ON \
+-DLIBCXX_INSTALL_MODULES=ON \
+-DLIBCXX_HAS_MUSL_LIBC=ON \
+-DLIBCXX_CXX_ABI=libcxxabi \
+-DLIBCXXABI_USE_LLVM_UNWINDER=ON
+samu all
 :end build
 
 package libc++:
-cd $srcdir/build
+depends = libc++abi
+cd $srcdir/llvm-project-$pkgver.src/build
 export DESTDIR=$pkgdir
-ninja install-cxx
+samu install-cxx
 :end package
 
 package libc++abi:
-cd $srcdir/build
+cd $srcdir/llvm-project-$pkgver.src/build
 export DESTDIR=$pkgdir
-ninja install-cxxabi
+samu install-cxxabi
 :end package

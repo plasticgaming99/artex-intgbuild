@@ -21,4 +21,6 @@ package:
 cd $srcdir/zlib-ng/build
 export DESTDIR=$pkgdir
 ninja install
+
+install -Dm644 $srcdir/zlib-ng/LICENSE.md $pkgdir/usr/share/licenses/zlib-ng/LICENSE.md
 :end package

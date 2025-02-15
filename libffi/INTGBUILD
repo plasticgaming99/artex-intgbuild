@@ -1,10 +1,10 @@
 packagename = libffi
-version = 3.4.6
+version = 3.4.7
 license = MIT
 architecture = x86_64
 description = Portable foreign-function interface library
 
-source = https://github.com/libffi/libffi/releases/download/v3.4.6/libffi-$pkgver.tar.gz
+source = https://github.com/libffi/libffi/releases/download/v$pkgver/libffi-$pkgver.tar.gz
 
 build:
 export PREFIX=/usr

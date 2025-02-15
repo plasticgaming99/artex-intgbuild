@@ -7,6 +7,8 @@ license = BSD-3 Clause or GPL-2.0 Only
 build:
 cd $srcdir/libcap
 export CC=clang
+export CGO_CFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
+export CGO_CXXFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
 sed -i s/gcc/clang/g Makefile
 sed -i s/gcc/clang/g Make.Rules
 make prefix=usr sbindir=bin lib=lib KERNEL_HEADERS=/usr/include CC=clang AR=llvm-ar OBJCOPY=llvm-objcopy RANLIB=llvm-ranlib
@@ -14,7 +16,8 @@ make prefix=usr sbindir=bin lib=lib KERNEL_HEADERS=/usr/include CC=clang AR=llvm
 
 package:
 cd $srcdir/libcap
-export DESTDIR=$pkgdir
-make install
+make DESTDIR=$pkgdir lib=lib prefix=/usr sbindir=bin install
+
+install -Dm644 $srcdir/libcap/License $pkgdir/usr/share/licenses/libcap/License
 :end package
 

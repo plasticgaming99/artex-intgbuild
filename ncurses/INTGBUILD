@@ -1,21 +1,37 @@
 packagename = ncurses
+packagename = ncurses-terminfo
 version = git
 license = MIT
 architecture = x86_64
 description = curses emulation library
 url = https://invisible-island.net/ncurses/
+
+provides = libcurses
+
 source = https://github.com/ThomasDickey/ncurses-snapshots.git
 
 build:
 cd $srcdir/ncurses-snapshots
 mkdir -p build
 cd build
-../configure --prefix=$pkgdir/usr --with-shared --with-cxx-shared
+../configure --prefix=/usr --disable-root-access --disable-root-environ --disable-setuid-environ --enable-widec --enable-pc-files --with-shared --with-cxx-shared --without-ada
 make -j8
 :end build
 
-package:
+package ncurses:
 cd $srcdir/ncurses-snapshots/build
 export DESTDIR=$pkgdir
-make install
+make install DESTDIR=$pkgdir
+mv $pkgdir/usr/share/terminfo $srcdir/terminfo
+
+install -Dm644 $srcdir/ncurses-snapshots/COPYING $pkgdir/usr/share/licenses/ncurses/COPYING
+install -Dm644 $srcdir/ncurses-snapshots/AUTHORS $pkgdir/usr/share/licenses/ncurses/AUTHORS
+:end package
+
+package ncurses-terminfo:
+mkdir -p $pkgdir/usr/share
+mv $srcdir/terminfo $pkgdir/usr/share/terminfo
+
+install -Dm644 $srcdir/ncurses-snapshots/AUTHORS $pkgdir/usr/share/licenses/ncurses-terminfo/AUTHORS
+install -Dm644 $srcdir/ncurses-snapshots/AUTHORS $pkgdir/usr/share/licenses/ncurses-terminfo/AUTHORS
 :end package

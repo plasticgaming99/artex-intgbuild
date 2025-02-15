@@ -9,10 +9,13 @@ depends = swi-prolog
 
 build:
 cd $srcdir/biomake
-bmake -j8
+zsh -c "make -j1 || true"
 :end build
 
 package:
 cd $srcdir/biomake
-export DESTDIR=$pkgdir/usr
-bake install
+export DESTDIR=$pkgdir
+make install prefix=/usr
+
+instal -Dm644 $srcdir/biomake/LICENSE $pkgdir/usr/share/licenses/biomake/LICENSE
+:end package
