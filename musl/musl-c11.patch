@@ -1,0 +1,5 @@
+--- a/Makefile
++++ b/Makefile
+@@ -48 +48 @@
+-CFLAGS_C99FSE = -std=c99 -ffreestanding -nostdinc 
++CFLAGS_C99FSE = -ffreestanding -nostdinc 

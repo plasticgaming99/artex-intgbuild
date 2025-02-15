@@ -1,0 +1,26 @@
+packagename = editline
+version = 1.17.1
+description = Editline Library
+license = BSD-Like
+url = https://troglobit.com/projects/editline/
+architecture = x86_64
+
+source = https://github.com/troglobit/editline/releases/download/$pkgver/editline-$pkgver.tar.gz
+
+build:
+cd $srcdir
+tar -xf editline-$pkgver.tar.gz
+cd editline-$pkgver
+./configure --prefix=/usr
+make
+:end build
+
+package:
+cd $srcdir/editline-$pkgver
+export DESTDIR=$pkgdir
+make install
+
+install -Dm 644 ChangeLog.md -t $pkgdir/usr/share/doc/$pkgname
+install -Dm 644 LICENSE -t $pkgdir/usr/share/licenses/$pkgname
+
+:end package

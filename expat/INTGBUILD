@@ -1,0 +1,23 @@
+packagename = expat
+version = 2.6.4
+source = https://github.com/libexpat/libexpat/archive/refs/tags/R_2_6_4.tar.gz
+
+build:
+bsdtar -xf libexpat-R_2_6_4.tar.gz
+mv libexpat-R_2_6_4 libexpat-$pkgver
+cd libexpat-$pkgver/expat
+mkdir -p build
+cd build
+cmake ../ -G Ninja \
+-DCMAKE_BUILD_TYPE=None \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-Wno-dev
+samu
+:end build
+
+package:
+export DESTDIR=$pkgdir
+cd $srcdir/libexpat-$pkgver/expat/build
+samu install
+install -Dm644 $srcdir/libexpat-$pkgver/COPYING $pkgdir/usr/share/licenses/expat/COPYING
+:end package

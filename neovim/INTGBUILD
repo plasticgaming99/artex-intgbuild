@@ -1,0 +1,30 @@
+packagename = neovim
+description = text editor extensible with lua
+version = 0.10.4
+license = Apache-2.0
+source = https://github.com/neovim/neovim/archive/refs/tags/v$pkgver.tar.gz
+
+build:
+bsdtar -xf neovim-$pkgver.tar.gz
+cd $srcdir/neovim-$pkgver
+mkdir -p build
+cd build
+cmake .. -G Ninja \
+-DCMAKE_BUILD_TYPE=Release \
+-DENABLE_LTO=ON \
+-DENABLE_JEMALLOC=ON \
+-DCI_BUILD=OFF \
+-DUSE_BUNDLED=ON \
+-DUSE_BUNDLED_TS=ON \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-Wno-dev
+samu all
+:end build
+
+package:
+cd $srcdir/neovim-$pkgver/build
+export DESTDIR=$pkgdir
+samu install
+
+install -Dm644 $srcdir/neovim-$pkgver/LICENSE.txt $pkgdir/usr/share/licenses/neovim/LICENSE.txt
+:end package

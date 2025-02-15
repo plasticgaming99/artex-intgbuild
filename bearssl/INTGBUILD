@@ -1,0 +1,29 @@
+packagename = bearssl
+version = git
+license = MIT
+
+source = git https://www.bearssl.org/git/BearSSL
+
+build:
+cd BearSSL
+make CC=clang LD=clang LDDLL=clang AR=llvm-ar BUILD=clang \
+CFLAGS="-O3 -march=x86-64-v2 -pipe -fPIC" \
+LDFLAGS="-O3 -fPIC" \
+LDDLLFLAGS="-O3 -shared -Wl,-soname,libbearssl.so.0.6" \
+D=".so.0.6"
+:end build
+
+package:
+cd $srcdir/BearSSL
+export DESTDIR=$pkgdir
+install -vDm755 -t $pkgdir/usr/bin clang/brssl
+zsh -c "install -vDm644 -t $pkgdir/usr/include inc/*.h"
+install -vDm644 -t $pkgdir/usr/lib clang/libbearssl.so.0.6
+ln -sf libbearssl.so.0.6 $pkgdir/usr/lib/libbearssl.so
+ln -sf libbearssl.so.0.6 $pkgdir/usr/lib/libbearssl.so.0
+
+install -Dm644 $srcdir/BearSSL/LICENSE.txt $pkgdir/usr/share/licenses/bearssl/LICENSE.txt
+
+//zsh -c "ln -sf libbearssl.so $pkgdir/usr/lib/libbearssl.so.0.6"
+//zsh -c "ln -sf libbearssl.so $pkgdir/usr/lib/libbearssl.so.0"
+:end package

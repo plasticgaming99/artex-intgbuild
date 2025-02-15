@@ -1,0 +1,17 @@
+packagename = chimera-libedit
+version = git
+license = BSD-3-Clause
+source = git https://github.com/chimera-linux/libedit-chimera
+
+build:
+cd libedit-chimera
+export PREFIX=/usr
+make
+:end build
+
+package:
+cd $srcdir/libedit-chimera
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/libedit-chimera/COPYING $pkgdir/usr/share/licenses/chimera-libedit/COPYING
+:end package

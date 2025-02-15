@@ -1,0 +1,27 @@
+packagename = icu
+version = 74-2
+license = BSD-3-Clause
+
+depends = gcc-libs
+depends = musl
+
+builddeps = python
+
+source = https://github.com/unicode-org/icu/archive/refs/tags/release-$pkgver.tar.gz
+
+build:
+bsdtar -xf icu-release-$pkgver.tar.gz
+cd icu-release-$pkgver/icu4c/source
+./configure --prefix=/usr \
+--sysconfdir=/etc \
+--mandir=/usr/share/man \
+--sbindir=/usr/bin
+make
+:end build
+
+package:
+cd $srcdir/icu-release-$pkgver/icu4c/source
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/icu-release-$pkgver/LICENSE $pkgdir/usr/share/licenses/icu/LICENSE
+:end package

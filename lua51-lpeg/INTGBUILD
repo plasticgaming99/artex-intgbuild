@@ -1,0 +1,16 @@
+packagename = lua51-lpeg
+version = 1.1.0
+license = MIT
+source = http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-$pkgver.tar.gz
+
+build:
+bsdtar -xf lpeg-$pkgver.tar.gz
+cd lpeg-$pkgver
+make LUADIR=/usr/include/lua5.1
+:end build
+
+package:
+cd $srcdir/lpeg-$pkgver
+install -Dm755 lpeg.so $pkgdir/usr/lib/lua/5.1/lpeg.so
+install -Dm644 re.lua $pkgdir/usr/share/lua/5.1/re.lua
+:end package

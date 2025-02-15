@@ -1,0 +1,20 @@
+packagename = byacc
+version = 20241231
+architecture = x86_64
+description = 
+source = https://invisible-mirror.net/archives/byacc/byacc-$pkgver.tgz
+
+build:
+cd $srcdir
+tar -xf byacc-$pkgver.tgz
+cd byacc-$pkgver
+./configure --disable-btyacc --enable-stdnoreturn
+make
+:end build
+
+package:
+cd $srcdir/byacc-$pkgver
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/byacc-$pkgver/LICENSE $pkgdir/usr/share/licences/byacc/LICENSE
+:end package

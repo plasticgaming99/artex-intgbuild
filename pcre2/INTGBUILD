@@ -1,0 +1,32 @@
+packagename = pcre2
+version = 10.45
+license = BSD-3-Clause
+
+source = https://github.com/PCRE2Project/pcre2/releases/download/pcre2-$pkgver/pcre2-$pkgver.tar.gz
+
+depends = bzip2
+depends = musl
+depends = zlib
+
+build:
+bsdtar -xf pcre2-$pkgver.tar.gz
+cd pcre2-$pkgver
+./configure --enable-jit \
+--enable-pcre2-16 \
+--enable-pcre2-32 \
+--enable-pcre2grep-libbz2 \
+--enable-pcre2grep-libz \
+--prefix=/usr
+
+export CFLAGS+=" -ffat-lto-objects"
+export CXXFLAGS+=" -ffat-lto-objects"
+
+make
+:end build
+
+package:
+cd $srcdir/pcre2-$pkgver
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/pcre2-$pkgver/COPYING $pkgdir/usr/share/licenses/pcre2/COPYING
+:end package

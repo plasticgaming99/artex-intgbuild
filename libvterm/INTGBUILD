@@ -1,0 +1,20 @@
+packagename = libvterm
+version = 0.3.3
+license = MIT
+source = https://www.leonerd.org.uk/code/libvterm/libvterm-$pkgver.tar.gz
+
+build:
+tar -xf libvterm-$pkgver.tar.gz
+cd libvterm-$pkgver
+export CC=clang
+export LD=ld.lld
+export LINK=ld.lld
+make CC=clang LD=ld.lld LINK=ld.lld PREFIX=/usr
+:end build
+
+package:
+cd $srcdir/libvterm-$pkgver
+make PREFIX=/usr DESTDIR=$pkgdir install
+
+install -Dm644 $srcdir/libvterm-$pkgver/LICENSE $pkgdir/usr/share/licenses/libvterm/LICENSE
+:end package

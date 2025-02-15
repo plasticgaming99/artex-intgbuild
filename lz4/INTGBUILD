@@ -1,0 +1,20 @@
+packagename = lz4
+version = 1.10.0
+license = GPL-2-or-later
+
+source = https://github.com/lz4/lz4/releases/download/v$pkgver/lz4-$pkgver.tar.gz
+
+build:
+bsdtar -xf lz4-$pkgver.tar.gz
+cd lz4-$pkgver/build/meson
+meson setup --prefix=/usr --buildtype=plain build .
+meson build -Dcontrib=true -Dexamples=true -Dprograms=true
+meson compile -C build
+:end build
+
+package:
+cd $srcdir/lz4-$pkgver/build/meson
+meson install -C build --destdir $pkgdir
+
+install -Dm644 $srcdir/lz4-$pkgver/LICENSE $pkgdir/usr/share/licenses/lz4/LICENSE
+:end package

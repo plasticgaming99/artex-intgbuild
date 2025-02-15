@@ -1,0 +1,23 @@
+packagename = hwloc
+version = 2.11.2
+license = BSD-3-Clause
+
+source = https://download.open-mpi.org/release/hwloc/v2.11/hwloc-$pkgver.tar.bz2
+
+build:
+bsdtar -xf hwloc-$pkgver.tar.bz2
+cd hwloc-$pkgver
+./configure \
+--prefix=/usr \
+--sbindir=/usr/bin \
+--enable-plugins \
+--sysconfdir=/etc
+make
+:end build
+
+package:
+cd $srcdir/hwloc-$pkgver
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/hwloc-$pkgver/COPYING $pkgdir/usr/share/licenses/hwloc/COPYING
+:end package

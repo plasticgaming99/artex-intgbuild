@@ -1,0 +1,19 @@
+packagename = openssl
+version = 3.4.1
+license = Apache-2.0
+source = https://github.com/openssl/openssl/releases/download/openssl-$pkgver/openssl-$pkgver.tar.gz
+
+build:
+bsdtar -xf openssl-$pkgver.tar.gz
+cd $srcdir/openssl-$pkgver
+./Configure --prefix=/usr --openssldir=/etc/ssl --libdir=lib \
+shared enable-ktls linux-x86_64
+make depend
+make
+:end build
+
+package:
+cd $srcdir/openssl-$pkgver
+make DESTDIR=$pkgdir MANDIR=/usr/share/man MANSUFFIX=ssl install_sw install_ssldirs install_man_docs
+install -Dm644 LICENSE.txt $pkgdir/usr/share/licenses/openssl/LICENSE.txt
+:end package

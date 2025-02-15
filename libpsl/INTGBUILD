@@ -1,0 +1,27 @@
+packagename = libpsl
+version = 0.21.5
+license = MIT
+source = https://github.com/rockdaboot/libpsl/releases/download/$pkgver/libpsl-$pkgver.tar.gz
+
+depends = icu
+
+builddeps = mason
+
+build:
+bsdtar -xf libpsl-$pkgver.tar.gz
+cd libpsl-$pkgver
+meson setup . output \
+--prefix=/usr \
+--sysconfdir=/etc \
+-Druntime=libicu \
+-Db_lto=true \
+-Dwerror=false
+meson compile -C output
+:end build
+
+package:
+cd $srcdir/libpsl-$pkgver
+export DESTDIR=$pkgdir
+meson install --no-rebuild -C output
+install -Dm644 $srcdir/libpsl-$pkgver/COPYING $pkgdir/usr/share/licenses/libpsl/COPYING
+:end package

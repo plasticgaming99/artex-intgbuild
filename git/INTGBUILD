@@ -1,0 +1,34 @@
+packagename = git
+version = 2.48.1
+source = https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.xz
+
+depends = curl
+depends = expat
+depends = perl
+depends = perl-shadow
+depends = perl-mailtool
+depends = openssl
+depends = pcre2
+depends = grep
+depends = perl-shadow
+depends = zlib
+
+build:
+bsdtar -xf git-$pkgver.tar.xz
+cd git-$pkgver
+make CC=clang \
+CXX=clang++ \
+LD=ld.lld \
+CFLAGS=-O3 \
+prefix=/usr \
+gitexecdir=/usr/lib/git-core \
+USE_LIBPCRE2=1 \
+NO_REGEX=YES
+:end build
+
+package:
+cd $srcdir/git-$pkgver
+make CC=clang CXX=clang++ LD=ld.lld NO_REGEX=YES prefix=/usr DESTDIR=$pkgdir install
+install -Dm644 $srcdir/git-$pkgver/COPYING $pkgdir/usr/share/licenses/git/COPYING
+:end package
+

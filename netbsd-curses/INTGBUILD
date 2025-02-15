@@ -1,0 +1,30 @@
+packagename = netbsd-curses
+license = BSD-3-Clause
+version = git
+
+provides = libcurses
+
+conflicts = ncurses
+
+source = git https://github.com/sabotage-linux/netbsd-curses
+
+build:
+cd $srcdir/netbsd-curses
+make CFLAGS="-O3 -march=skylake -mtune=generic -pipe -fPIC" \
+LDFLAGS="-O3 -fPIC -flto=thin -ffat-lto-objects" \
+PREFIX=/usr all all-static
+:end build
+
+package:
+cd $srcdir/netbsd-curses
+make install install-static \
+CFLAGS="-O3 -march=skylake -mtune=generic -pipe -fPIC" \
+LDFLAGS="-O3 -fPIC -flto=thin -ffat-lto-objects" \
+PREFIX=/usr \
+DESTDIR=$pkgdir
+// COM-bine to get compatibility to ncurses
+cd $pkgdir/usr/lib
+clang -shared -o libncursesw.so.6 -Wl,--whole-archive libcurses.a libterminfo.a -Wl,--no-whole-archive
+
+install -Dm644 $srcdir/netbsd-curses/COPYING $pkgdir/usr/share/licenses/netbsd-curses/COPYING
+:end package

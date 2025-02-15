@@ -1,0 +1,30 @@
+packagename = mimalloc
+version = 2.1.9
+license = MIT
+source = https://github.com/microsoft/mimalloc/archive/refs/tags/v$pkgver.tar.gz
+
+depends = musl
+
+builddeps = cmake
+builddeps = samurai
+
+build:
+bsdtar -xf mimalloc-$pkgver.tar.gz
+cd mimalloc-$pkgver
+mkdir -p build
+cd build
+cmake ../ -G Ninja \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCMAKE_BUILD_TYPE=Debug \
+-DMI_BUILD_STATIC=ON \
+-DMI_BUILD_OBJECT=ON \
+-DMI_INSTALL_TOPLEVEL=ON
+samu all
+:end build
+
+package:
+cd $srcdir/mimalloc-$pkgver/build
+export DESTDIR=$pkgdir
+samu install
+install -Dm644 $srcdir/mimalloc-$pkgver/LICENSE $pkgdir/usr/share/licenses/mimalloc/LICENSE
+:end package

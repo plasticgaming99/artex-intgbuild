@@ -1,0 +1,27 @@
+packagename = htop
+version = 3.3.0
+description = interactive process viewer
+architecture = x86_64
+url = https://htop.dev
+source = https://github.com/htop-dev/htop.git
+
+depends = libcap
+depends = ncurses
+
+builddeps = git
+builddeps = lm_sensors
+
+build:
+cd $srcdir/htop
+autoreconf -fi
+./configure --prefix=/usr --sysconfdir=/etc --enable-affinity --enable-capabilities
+make
+:end build
+
+package:
+cd $srcdir/htop
+export DESTDIR=$pkgdir
+make install
+
+install -Dm644 $srcdir/htop/COPYING $pkgdir/usr/share/licenses/htop/COPYING
+:end package

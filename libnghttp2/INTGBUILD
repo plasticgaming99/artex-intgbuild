@@ -1,0 +1,25 @@
+packagename = libnghttp2
+version = 1.64.0
+license = MIT
+depends = musl
+
+source = https://github.com/nghttp2/nghttp2/releases/download/v$pkgver/nghttp2-$pkgver.tar.bz2
+
+build:
+bsdtar -xf nghttp2-$pkgver.tar.bz2
+cd nghttp2-$pkgver
+git submodule update --init --recursive
+./configure \
+--prefix=/usr \
+--disable-examples \
+--disable-python-bindings \
+--enable-lib-only
+make
+:end build
+
+package:
+cd $srcdir/nghttp2-$pkgver
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/nghttp2-$pkgver/COPYING $pkgdir/usr/share/licenses/libnghttp2/COPYING
+:end package

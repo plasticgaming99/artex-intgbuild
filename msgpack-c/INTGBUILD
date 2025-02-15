@@ -1,0 +1,22 @@
+packagename = msgpack-c
+description = object
+version = 6.1.0
+license = BSD-1.0
+source = https://github.com/msgpack/msgpack-c/releases/download/c-$pkgver/msgpack-c-$pkgver.tar.gz
+
+build:
+tar -xf msgpack-c-$pkgver.tar.gz
+cd msgpack-c-$pkgver
+mkdir -p build
+cd build
+cmake -G Ninja ../ \
+-DCMAKE_INSTALL_PREFIX=/usr
+samu all
+:end build
+
+package:
+cd $srcdir/msgpack-c-$pkgver/build
+export DESTDIR=$pkgdir
+samu install
+install -Dm644 $srcdir/msgpack-c-$pkgver/COPYING $pkgdir/usr/share/licenses/msgpack-c/COPYING
+:end package

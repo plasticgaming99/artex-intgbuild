@@ -1,0 +1,39 @@
+packagename = curl
+version = 8.12.0
+license = MIT
+depends = ca-certificates
+
+source = https://github.com/curl/curl/releases/download/curl-8_12_0/curl-8.12.0.tar.bz2
+
+build:
+bsdtar -xf curl-$pkgver.tar.bz2
+mkdir -p build-curl
+mkdir -p build-curl-compat
+cd $srcdir/build-curl
+$srcdir/curl-$pkgver/configure \
+--prefix=/usr \
+--mandir=/usr/share/man \
+--disable-ldap \
+--disable-ldaps \
+--disable-manual \
+--enable-ipv6 \
+--enable-threaded-resolver \
+--enable-websockets \
+--with-gssapi \
+--with-random=/dev/urandom \
+--with-bearssl \
+--without-libidn2 \
+--without-libidn \
+--with-zsh-functions-dir=/usr/share/zsh/site-functions/
+cd $srcdir/build-curl
+zsh -c "  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool"
+make
+:end build
+
+package:
+cd $srcdir/build-curl
+export DESTDIR=$pkgdir
+make install
+
+install -Dm644 $srcdir/curl-$pkgver/LICENSE $pkgdir/usr/share/licenses/curl/LICENSE
+:end package

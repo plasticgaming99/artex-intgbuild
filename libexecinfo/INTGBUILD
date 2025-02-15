@@ -1,0 +1,16 @@
+packagename = libexecinfo
+description = clone of glibc backtrace
+version = git
+license = BSD
+source = https://github.com/resslinux/libexecinfo.git
+
+build:
+cd libexecinfo
+make
+:end build
+
+package:
+cd $srcdir/libexecinfo
+export DESTDIR=$pkgdir
+make install
+:end package

@@ -1,0 +1,16 @@
+packagename = musl-fts
+version = 1.2.7
+license = BSD-3 Clause
+architecture = x86_64
+url = https://github.com/void-linux/musl-fts
+source = https://github.com/void-linux/musl-fts/archive/refs/tags/v1.2.7.tar.gz
+
+build:
+cd $srcdir
+tar -xf musl-fts-1.2.7.tar.gz
+cd musl-fts-1.2.7
+./bootstrap.sh
+:end build
+
+package:
+:end package

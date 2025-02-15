@@ -1,0 +1,23 @@
+packagename = tree-sitter
+version = 0.25.1
+license = MIT
+
+source = https://github.com/tree-sitter/tree-sitter/archive/refs/tags/v$pkgver.tar.gz
+
+builddeps = cmake
+builddeps = git
+builddeps = rust
+
+build:
+cd $srcdir
+tar -xf tree-sitter-$pkgver.tar.gz
+cd tree-sitter-$pkgver
+make
+:end build
+
+package:
+cd $srcdir/tree-sitter-$pkgver
+export DESTDIR=$pkgdir
+make PREFIX=/usr install 
+install -Dm644 LICENSE -t $pkgdir/usr/share/licenses/tree-sitter
+:end package

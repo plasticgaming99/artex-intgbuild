@@ -1,0 +1,18 @@
+packagename = samurai
+version = 1.2
+description = Ninja-compatible build tool written in C99
+license = Apache 2.0
+source = https://github.com/michaelforney/samurai/releases/download/$pkgver/samurai-$pkgver.tar.gz
+
+build:
+tar -xf samurai-$pkgver.tar.gz
+cd samurai-$pkgver
+make
+:end build
+
+package:
+cd $srcdir/samurai-$pkgver
+export DESTDIR=$pkgdir
+make install PREFIX=/usr
+install -Dm644 ./LICENSE $pkgdir/usr/share/licenses/samurai/LICENSE
+:end package

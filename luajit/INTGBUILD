@@ -1,0 +1,16 @@
+packagename = luajit
+version = git
+license = MIT
+source = https://github.com/LuaJIT/LuaJIT.git
+
+build:
+cd $srcdir/LuaJIT
+make CC=clang CXX=clang++ LD=ld.lld PREFIX=/usr
+:end build
+
+package:
+cd $srcdir/LuaJIT
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/LuaJIT/COPYRIGHT $pkgdir/usr/share/licenses/luajit/COPYRIGHT
+:end package

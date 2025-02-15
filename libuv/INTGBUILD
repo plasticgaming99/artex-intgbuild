@@ -1,0 +1,28 @@
+packagename = libuv
+version = 1.50.0
+description = Crossplatform Async i/o
+license = MIT
+source = https://dist.libuv.org/dist/v$pkgver/libuv-v$pkgver.tar.gz
+
+build:
+bsdtar -xf libuv-v$pkgver.tar.gz
+cd libuv-v$pkgver
+zsh autogen.sh
+./configure \
+--prefix=/usr \
+--sysconfdir=/etc \
+--mandir=/usr/share/man \
+--localstatedir=/var
+make
+:end build
+
+package:
+cd $srcdir/libuv-v$pkgver
+export DESTDIR=$pkgdir
+make install
+
+install -Dm644 $srcdir/libuv-v$pkgver/LICENSE \
+$srcdir/libuv-$pkgver/LICENSE_DOCS \
+$srcdir/libuv-$pkgver/AUTHORS \
+$pkgdir/usr/share/licenses/libuv/
+:end package

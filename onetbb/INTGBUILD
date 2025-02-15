@@ -1,0 +1,33 @@
+packagename = onetbb
+version = 2022.0.0
+license = Apache
+
+depends = hwloc
+
+builddeps = cmake
+builddeps = samurai
+
+source = https://github.com/uxlfoundation/oneTBB/archive/v$pkgver/onetbb-$pkgver.tar.gz
+
+build:
+export LDFLAGS+= -fuse-ld=mold
+
+bsdtar -xf oneTBB-$pkgver.tar.gz
+cd oneTBB-$pkgver
+mkdir -p build
+cd build
+cmake ../ -G Ninja \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DTBB_STRICT=OFF \
+-DTBB_TEST=OFF \
+-DCMAKE_BUIULD_TYPE=None
+samu all
+:end build
+
+package:
+export DESTDIR=$pkgdir
+cd $srcdir/oneTBB-$pkgver/build
+samu install
+
+install -Dm644 $srcdir/oneTBB-$pkgver/LICENSE.txt $pkgdir/usr/share/licenses/onetbb/LICENSE.txt
+:end package

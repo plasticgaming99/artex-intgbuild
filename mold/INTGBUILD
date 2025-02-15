@@ -1,0 +1,29 @@
+packagename = mold
+version = 2.36.0
+license = MIT
+description = a modern linker
+
+source = https://github.com/rui314/mold/archive/refs/tags/v$pkgver.tar.gz
+
+build:
+bsdtar -xf mold-$pkgver.tar.gz
+cd mold-$pkgver
+mkdir -p build
+cd build
+cmake ../ -G Ninja \
+-DCMAKE_BUILD_TYPE=None \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCMAKE_INSTALL_LIBEXECDIR=lib \
+-DMOLD_LTO=ON \
+-DMOLD_USE_MOLD=ON \
+-DMOLD_USE_SYSTEM_TBB=ON \
+-DMOLD_USE_SYSTEM_MIMALLOC=ON
+samu .
+:end build
+
+package:
+cd $srcdir/mold-$pkgver/build
+export DESTDIR=$pkgdir
+samu install
+install -Dm644 $srcdir/mold-$pkgver/LICENSE $pkgdir/usr/share/licenses/mold/LICENSE
+:end package

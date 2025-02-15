@@ -1,0 +1,37 @@
+packagename = lld
+version = 19.1.7
+license = Apache-2.0 with LLVM-exceptions
+
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
+
+build:
+cd $srcdir
+bsdtar -xvkf llvm-project-$pkgver.src.tar.xz
+cd llvm-project-$pkgver.src
+mkdir -p build
+cd build
+cmake ../lld -G Ninja \
+-DLLVM_ENABLE_PROJECTS=lld \
+-DLLVM_BOOTSTRAP=ON \
+-DCMAKE_ENABLE_PIC=ON \
+-DCMAKE_BUILD_TYPE=None \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCMAKE_SKIP_INSTALL_RPATH=ON \
+-DBUILD_SHARED_LIBS=ON \
+-DLLD_BUILT_STANDALONE=ON \
+-DLLVM_BUILD_DOCS=OFF \
+-DLLVM_BUILD_LLVM_DYLIB=ON \
+-DLLVM_LINK_LLVM_DYLIB=ON \
+-DLLVM_ENABLE_LIBCXX=ON \
+-DLLVM_ENABLE_COMPILER_RT=ON \
+-DLLVM_MAIN_SRC_DIR=$srcdir/llvm-project-$pkgver.src/llvm \
+-Wno-dev
+samu
+:end build
+
+package:
+cd $srcdir/llvm-project-$pkgver.src/build
+export DESTDIR=$pkgdir
+//samu install-lld
+//samu install-lld-cmake-exports
+:end package

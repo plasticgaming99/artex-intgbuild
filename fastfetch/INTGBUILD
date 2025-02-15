@@ -1,0 +1,46 @@
+packagename = fastfetch
+version = 2.29.0
+description = neofetch like system information tool
+architecture - x86_64
+license = MIT
+
+depends = musl
+depends = yyjson
+
+builddeps = chafa
+builddeps = cmake
+builddeps = dbus
+builddeps = dconf
+builddeps = ddcutil
+builddeps = directx-headers
+builddeps = imagemagick
+builddeps = libpulse
+builddeps = libxcd
+builddeps = libxrandr
+builddeps = mesa
+builddeps = ninja
+builddeps = ocl-icd
+builddeps = opencl-headers
+builddeps = vulkan-headers
+builddeps = vulkan0icd-loader
+builddeps = wayland
+builddeps = xfconf
+builddeps = zlib
+
+source = https://github.com/fastfetch-cli/fastfetch.git
+
+build:
+cd $srcdir/fastfetch
+mkdir -p build
+cd build
+cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr
+cmake --build .
+:end build
+
+package:
+cd $srcdir/fastfetch/build
+export DESTDIR=$pkgdir
+cmake --install .
+
+install -Dm644 $srcdir/fastfetch/LICENSE $pkgdir/usr/share/licenses/fastfetch/LICENSE
+:end package

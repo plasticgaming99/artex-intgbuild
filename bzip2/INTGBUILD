@@ -1,0 +1,22 @@
+packagename = bzip2
+version = 1.0.8
+license = BSD
+depends = musl
+source = https://sourceware.org/pub/bzip2/bzip2-$pkgver.tar.gz
+
+build:
+bsdtar -xf bzip2-$pkgver.tar.gz
+cd bzip2-$pkgver
+make bzip2 bzip2recover CC="clang -O3 -flto=thin -ffat-lto-objects"
+make -f Makefile-libbz2_so CC="clang -O3 -flto=thin -ffat-lto-objects"
+:end build
+
+package:
+cd $srcdir/bzip2-$pkgver
+make install PREFIX=$pkgdir/usr
+
+zsh -c "cp -a libbz2.so* $pkgdir/usr/lib"
+ln -s libbz2.so.$pkgver $pkgdir/usr/lib/libbz2.so
+ln -s libbz2.so.$pkgver $pkgdir/usr/lib/libbz2.so.1
+install -Dm644 $srcdir/bzip2-$pkgver/LICENSE $pkgdir/usr/share/licenses/bzip2/LICENSE
+:end package

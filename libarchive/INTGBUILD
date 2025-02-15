@@ -1,0 +1,30 @@
+packagename = libarchive
+version = 3.7.7
+url = https://libarchive.org/
+license = BSD
+source = https://github.com/libarchive/libarchive/releases/download/v$pkgver/libarchive-$pkgver.tar.gz
+
+depends = acl
+depends = bzip2
+depends = libxml2
+depends = lz4
+depends = xz
+depends = zlib
+depends = zstd
+
+build:
+export CFLAGS+= -ffat-lto-objects -flto=auto
+bsdtar -xf libarchive-$pkgver.tar.gz
+cd libarchive-$pkgver
+./configure \
+--prefix=/usr \
+--without-xml2
+:end build
+
+package:
+cd $srcdir/libarchive-$pkgver
+export DESTDIR=$pkgdir
+make install
+
+install -Dm644 $srcdir/libarchive-$pkgver/COPYING $pkgdir/usr/share/licenses/libarchive/COPYING
+:end package

@@ -1,0 +1,25 @@
+packagename = boringssl
+version = git
+description = Google's OpenSSL Fork
+license = MIT
+source = git https://boringssl.googlesource.com/boringssl
+
+build:
+cd $srcdir/boringssl
+mkdir -p build
+cd build
+cmake ../ -G Ninja \
+-DCMAKE_BUILD_TYPE=Release \
+-DBUILD_SHARED_LIBS=1
+samu all
+:end build
+
+package:
+cd $srcdir/boringssl
+
+install -Dm755 build/crypto/libcrypto.so $pkgdir/usr/lib/crypto/libcrypto.so
+install -Dm755 build/ssl/libssl.so $pkgdir/usr/lib/ssl/libssl.so
+install -Dm755 build/decrepit/libdecrepit.so $pkgdir/usr/lib/decrepit/libdecrepit.so
+
+install -Dm644 LICENSE $pkgdir/usr/share/licenses/boringssl/LICENSE
+:end package

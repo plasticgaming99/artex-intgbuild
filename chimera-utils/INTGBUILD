@@ -1,0 +1,66 @@
+packagename = chimera-awk
+packagename = chimera-ed
+packagename = chimera-grep
+packagename = chimera-gzip
+packagename = chimera-m4
+packagename = chimera-netcat
+packagename = chimera-patch
+packagename = chimera-sed
+description = very cool utilities from chimera based on freebsd
+version = 14.2.1
+source = https://github.com/chimera-linux/chimerautils/archive/refs/tags/v$pkgver.tar.gz
+
+build:
+bsdtar -xf chimerautils-$pkgver.tar.gz
+cd chimerautils-$pkgver
+cd $srcdir/chimerautils-$pkgver
+meson setup . build \
+--prefix=/usr \
+-Db_lto=true \
+-Dwerror=false
+meson compile -C build
+:end build
+
+package chimera-awk:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/awk
+install -Dm755 awk -t $pkgdir/usr/bin/
+install -Dm755 maketab -t $pkgdir/usr/bin/
+install -Dm644 awkgram.tab.h -t $pkgdir/usr/include/
+install -Dm644 awkgram.tab.c -t $pkgdir/usr/include/
+install -Dm644 proctab.c -t $pkgdir/usr/include/
+:end package
+
+package chimera-ed:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/ed
+install -Dm755 ed -t $pkgdir/usr/bin/
+:end package
+
+package chimera-grep:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/grep
+install -Dm755 grep -t $pkgdir/usr/bin/
+:end package
+
+package chimera-gzip:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/gzip
+install -Dm755 gzip -t $pkgdir/usr/bin/
+:end gzip
+
+package chimera-m4:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/m4
+install -Dm755 m4 -t $pkgdir/usr/bin/
+:end package
+
+package chimera-netcat:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/netcat
+install -Dm755 nc -t $pkgdir/usr/bin/
+:end netcat
+
+package chimera-patch:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/patch
+install -Dm755 patch -t $pkgdir/usr/bin/
+:end package
+
+package chimera-sed:
+cd $srcdir/chimerautils-14.2.1/build/src.freebsd/sed
+install -Dm755 sed -t $pkgdir/usr/bin/
+:end package

@@ -1,0 +1,34 @@
+packagename = brotli
+packagename = python-brotli
+version = 1.1.0
+license = MIT
+source = https://github.com/google/brotli/archive/refs/tags/v$pkgver.tar.gz
+
+builddeps = cmake
+
+build:
+tar -xf brotli-$pkgver.tar.gz
+cd brotli-$pkgver
+export CFLAGS+= -ffat-lto-objects
+python -m build --wheel --no-isolation
+mkdir -p build
+cd build
+cmake ../ -G Ninja \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DBUILD_SHARED_LIBS=True
+samu
+:end build
+
+package brotli:
+export DESTDIR=$pkgdir
+cd $srcdir/brotli-$pkgver/build
+samu install
+install -Dm644 $srcdir/brotli-$pkgver/LICENSE $pkgdir/usr/share/licenses/brotli/LICENSE
+:end package
+
+package brotli-python:
+cd $srcdir/brotli-$pkgver
+zsh -c "python -m installer --destdir=$pkgdir dist/*.whl"
+install -Dm644 $srcdir/brotli-$pkgver/LICENSE $pkgdir/usr/share/licenses/python-brotli
+:end package

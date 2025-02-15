@@ -1,0 +1,18 @@
+packagename = rustls-openssl-compat
+version = git
+license = Apache-2.0
+source = https://github.com/rustls/rustls-openssl-compat.git
+
+build:
+export RUSTFLAGS+= -Cprefer-dynamic -Ctarget-feature=-crt-static
+cd rustls-openssl-compat
+export CFLAGS+= -B ~/.rustup/toolchains/nightly-x86_64-unknown-linux-musl/lib/rustlib/x86_64-unknown-linux-musl/lib/self-contained/crtbeginS.o
+make
+:end build
+
+package:
+cd $srcdir/rustls-openssl-compat
+make install
+
+install -Dm644 $srcdir/rustls-openssl-compat/LICENSE $pkgdir/usr/share/licenses/rustls-openssl-compat/LICENSE
+:end package

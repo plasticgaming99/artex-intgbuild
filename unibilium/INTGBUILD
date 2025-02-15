@@ -1,0 +1,24 @@
+packagename = unibilium
+description = terminfo parsing library
+license = LGPLv3
+version = 2.1.2
+source = https://github.com/neovim/unibilium/archive/refs/tags/v$pkgver.tar.gz
+
+build:
+bsdtar -xf unibilium-$pkgver.tar.gz
+cd unibilium-$pkgver
+//cmake ../ -G Ninja \
+//-DCMAKE_INSTALL_PREFIX=/usr
+//samu
+autoreconf -fi
+./configure --prefix=/usr
+make
+:end build
+
+package:
+cd $srcdir/unibilium-$pkgver
+export DESTDIR=$pkgdir
+make install
+//samu install
+install -Dm644 $srcdir/unibilium-$pkgver/LICENSE $pkgdir/usr/share/licenses/unibilium/LICENSE
+:end package
