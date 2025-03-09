@@ -1,0 +1,26 @@
+packagename = uutils-diffutils
+version = git
+license = MIT
+architecture = x86_64
+description = Cross-platform Diffutils reimplemention in Rust
+url = https://uutils.github.io/
+source = https://github.com/uutils/diffutils.git
+
+depends = musl
+
+builddeps = rust
+builddeps = cargo
+
+build:
+cd $srcdir/diffutils
+cargo build --release --target x86_64-unknown-linux-musl
+:end build
+
+package:
+cd $srcdir/findutils
+install -Dm755 $srcdir/diffutils/target/x86_64-unknown-linux-musl/release/diffutils $pkgdir/usr/bin/diffutils
+install -Dm644 $srcdir/diffutils/LICENSE-MIT $pkgdir/usr/share/licenses/uu-diffutils/LICENSE-MIT
+cd $pkgdir/usr/bin
+ln -sf diffutils diff
+ln -sf diffutils cmp
+:end package

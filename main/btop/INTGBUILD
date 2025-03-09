@@ -1,0 +1,23 @@
+packagename = btop
+description = A featurerich "top" command
+version = git
+license = Apache-2.0
+source = https://github.com/aristocratos/btop/archive/refs/heads/main.tar.gz
+
+options !lto
+
+build:
+//export CXXFLAGS-=-stdlib=libc++
+//export CXXFLAGS+=-stdlib=libstdc++
+
+export LDFLAGS+=-stdlib=libc++
+
+bsdtar -xf btop-main.tar.gz
+cd btop-main
+make all OPTFLAGS= ADDFLAGS=" -fno-ipa-cp"
+:end build
+
+package:
+cd $srcdir/btop-main
+make DESTDIR=$pkgdir PREFIX=/usr install
+:end package

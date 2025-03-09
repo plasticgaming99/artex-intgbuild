@@ -16,7 +16,7 @@ cd chimerautils-$pkgver
 cd $srcdir/chimerautils-$pkgver
 meson setup . build \
 --prefix=/usr \
--Db_lto=true \
+-Db_lto=false \
 -Dwerror=false
 meson compile -C build
 :end build

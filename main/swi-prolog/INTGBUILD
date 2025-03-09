@@ -9,19 +9,26 @@ source = https://github.com/SWI-Prolog/swipl-devel.git
 depends = cmake
 
 build:
+export CFLAGS=-O2 -march=skylake -mtune=generic -pipe
+export LDFLAGS=-O2 -march=skylake -mtune=generic -pipe -fuse-ld=mold
+
 cd $srcdir/swipl-devel
-git checkout V7.7.25
+git checkout V9.3.20
 git submodule update --init
 mkdir -p build
 cd build
-export CC=clang
-cmake -DCMAKE_INSTALL_PREFIX=$pkgdir/usr -G Ninja ..
-ninja
+cmake -G Ninja .. \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DBUILD_TESTING=OFF \
+-Wno-dev
+samu
 :end build
 
 package:
+export DESTDIR=$pkgdir
 cd $srcdir/swipl-devel
-ninja install
+samu install
 
 install -Dm644 $srcdir/swipl-devel/LICENSE $pkgdir/usr/share/licenses/swi-prolog/LICENSE
 :end package

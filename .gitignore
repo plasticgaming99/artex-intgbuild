@@ -1,4 +1,5 @@
-root
+root*
 **/package
+**/pkg-*
 **/source
 **/*.intg.tar.zst

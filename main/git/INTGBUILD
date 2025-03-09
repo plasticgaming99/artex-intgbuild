@@ -19,16 +19,29 @@ cd git-$pkgver
 make CC=clang \
 CXX=clang++ \
 LD=ld.lld \
-CFLAGS=-O3 \
+CFLAGS="-O3 -march=skylake -mtune=generic -flto=thin" \
+LDFLAGS="-O3 -march=skylake -mtune=generic -flto=thin" \
 prefix=/usr \
 gitexecdir=/usr/lib/git-core \
+INSTALL_SYMLINKS=1 \
 USE_LIBPCRE2=1 \
 NO_REGEX=YES
 :end build
 
 package:
 cd $srcdir/git-$pkgver
-make CC=clang CXX=clang++ LD=ld.lld NO_REGEX=YES prefix=/usr DESTDIR=$pkgdir install
+make CC=clang \
+CXX=clang++ \
+LD=ld.lld \
+CFLAGS="-O3 -march=skylake -mtune=generic -flto=thin" \
+LDFLAGS="-O3 -march=skylake -mtune=generic -flto=thin" \
+prefix=/usr \
+gitexecdir=/usr/lib/git-core \
+INSTALL_SYMLINKS=1 \
+USE_LIBPCRE2=1 \
+NO_REGEX=YES \
+DESTDIR=$pkgdir \
+install
 install -Dm644 $srcdir/git-$pkgver/COPYING $pkgdir/usr/share/licenses/git/COPYING
 :end package
 

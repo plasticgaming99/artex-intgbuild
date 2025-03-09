@@ -20,20 +20,20 @@ cd $srcdir/zsh
 
 sed "s#\s*Completion/$_fpath/\*/\*##g" -i Src/Zle/complete.mdd
 
-export CFLAGS+= -I~/artex-intgbuild/netbsd-curses/package/usr/include
-export LDFLAGS+= -L~/artex-intgbuild/netbsd-curses/package/usr/lib
+//export CFLAGS+=-I$intgroot/../netbsd-curses/package/usr/include
+export LDFLAGS+=-L$intgroot/../netbsd-curses/package/usr/lib
 
-export CFLAGS-=-ffunction-sections
-export CFLAGS-=-fdata-sections
-export CFLAGS-=-Wl,--icf=all--gc-sections
-export CFLAGS-=-faddrsig
-export LDFLAGS-=-ffunction-sections
-export LDFLAGS-=-fdata-sections
-export LDFLAGS-=-Wl,--icf=all,--gc-sections
-export LDFLAGS-=-faddrsig
+//export CFLAGS-=-ffunction-sections
+//export CFLAGS-=-fdata-sections
+//export CFLAGS-=-Wl,--icf=all--gc-sections
+//export CFLAGS-=-faddrsig
+//export LDFLAGS-=-ffunction-sections
+//export LDFLAGS-=-fdata-sections
+//export LDFLAGS-=-Wl,--icf=all,--gc-sections
+//export LDFLAGS-=-faddrsig
 
-export CFLAGS+= -fcs-profile-generate -fprofile-update=atomic -Wno-implicit-function-declaration -mllvm -vp-counters-per-site=2048
-export LDFLAGS+= -fcs-profile-generate -fprofile-update=atomic -Wno-implicit-function-declaration -mllvm -vp-counters-per-site=2048 -Wl,-mllvm,-vp-counters-per-site=2048
+export CFLAGS+=-fcs-profile-generate -fprofile-update=atomic -mllvm -vp-counters-per-site=2048
+export LDFLAGS+=-fcs-profile-generate -fprofile-update=atomic -mllvm -vp-counters-per-site=2048 -Wl,-mllvm,-vp-counters-per-site=2048
 
 // just bootstrap with alpine, artex is not independent
 zsh Util/preconfig

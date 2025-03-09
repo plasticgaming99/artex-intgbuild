@@ -1,0 +1,23 @@
+packagename = sed
+version = git
+license = MIT
+architecture = x86_64
+description = Cross-platform sed reimplemention in Rust
+url = https://uutils.github.io/
+source = https://github.com/uutils/sed.git
+
+depends = musl
+
+builddeps = rust
+builddeps = cargo
+
+build:
+cd $srcdir/sed
+cargo build --release --target x86_64-unknown-linux-musl
+:end build
+
+package:
+cd $srcdir/findutils
+install -Dm755 $srcdir/sed/target/x86_64-unknown-linux-musl/release/sed $pkgdir/usr/bin/sed
+install -Dm644 $srcdir/sed/LICENSE $pkgdir/usr/share/licenses/uu-sed/LICENSE
+:end package

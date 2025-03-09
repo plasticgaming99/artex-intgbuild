@@ -1,0 +1,25 @@
+packagename = smake
+version = 1.2.5
+description = Highly portable UNIX make implementation since 1985
+license = GPLv2
+
+source = git https://codeberg.org/schilytools/schilytools
+
+build:
+export CFLAGS+=-Wno-implicit-int -Wno-deprecated-non-prototype
+cd schilytools
+cd psmake
+./MAKE-all CC=clang CHOST=x86_64-unknown-linux-musl CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}"
+//make CC=clang COPTX=-DTRY_EXT2_FS CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}"
+cd ..
+//psmake/smake CCOM=clang CC=clang COPTX=-DTRY_EXT2_FS
+:end build
+
+package:
+cd $srcdir/schilytools
+// incompleted build :(
+install -Dm755 psmake/smake $pkgdir/usr/bin/smake
+install -Dm644 COPYING $pkgdir/usr/share/licenses/smake/COPYING
+//export DESTDIR=$pkgdir
+//make install
+:end package

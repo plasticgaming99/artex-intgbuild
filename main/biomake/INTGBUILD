@@ -15,7 +15,7 @@ zsh -c "make -j1 || true"
 package:
 cd $srcdir/biomake
 export DESTDIR=$pkgdir
-make install prefix=/usr
-
-instal -Dm644 $srcdir/biomake/LICENSE $pkgdir/usr/share/licenses/biomake/LICENSE
+mkdir -p $pkgdir/usr/bin
+make install  prefix=$pkgdir/usr
+install -Dm644 $srcdir/biomake/LICENSE $pkgdir/usr/share/licenses/biomake/LICENSE
 :end package

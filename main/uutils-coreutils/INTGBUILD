@@ -1,4 +1,4 @@
-packagename = coreutils
+packagename = uutils-coreutils
 version = git
 license = MIT
 architecture = x86_64

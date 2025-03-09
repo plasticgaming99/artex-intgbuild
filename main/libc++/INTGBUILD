@@ -1,6 +1,6 @@
 packagename = libc++
 packagename = libc++abi
-version = 19.1.7
+version = 20.1.0
 description =  LLVM C++ standard lib
 url = https://libcxx.llvm.org
 license = Apache 2.0 With LLVM Exceptions
@@ -11,9 +11,6 @@ source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/
 depends = llvm-libunwind
 
 build:
-export CFLAGS=-O2 -march=x86-64-v2 -mtune=generic -pipe
-export CXXFLAGS=-O2 -march=x86-64-v2 -mtune=generic -pipe
-export LDFLAGS=-O1
 cd $srcdir
 bsdtar -xkf llvm-project-$pkgver.src.tar.xz
 zsh -c "sed -i 's/CREDITS.TXT/CREDITS/' $srcdir/llvm-project-$pkgver.src/libcxx{,abi}/LICENSE.TXT"

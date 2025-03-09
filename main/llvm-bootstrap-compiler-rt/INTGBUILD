@@ -1,6 +1,6 @@
 packagename = compiler-rt
 
-version = 19.1.7
+version = 20.1.0
 source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
 
 build:

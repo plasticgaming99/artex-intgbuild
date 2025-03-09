@@ -1,7 +1,7 @@
 packagename = llvm
 packagename = llvm-libs
 license = Apache-2.0-with-LLVM-exceptions
-version = 19.1.7
+version = 20.1.0
 
 source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
 
@@ -17,7 +17,6 @@ cd llvm-project-$pkgver.src
 mkdir -p build
 cd build
 cmake ../llvm -G Ninja \
--DCMAKE_CROSSCOMPILE=ON \
 -DLLVM_ENABLE_PIC=ON \
 -DCMAKE_SYSTEM_NAME=Linux \
 -DLLVM_TARGET_TRIPLE=x86_64-pc-linux-musl \
@@ -38,18 +37,15 @@ cmake ../llvm -G Ninja \
 -DLLVM_INCLUDE_BENCHMARKS=OFF \
 -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
 -DCLANG_DEFAULT_RTLIB=compiler-rt \
--DLLVM_ENABLE_BINDINGS=OFF \
+-DLLVM_ENABLE_BINDINGS=ON \
 -DLLVM_INSTALL_UTILS=ON \
 -DLLVM_BUILD_LLVM_DYLIB=ON \
 -DLLVM_LINK_LLVM_DYLIB=ON \
 -Wno-dev \
 -DLIBCXX_HAS_MUSL_LIBC=ON \
--DLLVM_ENABLE_GOLD=ON \
 -DLIBCXX_CXX_ABI=libcxxabi \
--DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
+-DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=OFF \
 -DLIBCXX_USE_COMPILER_RT=ON \
--DLIBCXX_USE_COMPILER_RT=ON \
--DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
 -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
 -DLIBCXXABI_ENABLE_STATIC_UNWINDER=ON \
 -DLIBCXXABI_USE_COMPILER_RT=ON

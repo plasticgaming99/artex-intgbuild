@@ -1,0 +1,9 @@
+packagename = linux
+version = 6.13.5
+license = GPL-2.0-only
+
+source = https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$pkgver.tar.xz
+
+build:
+bsdtar -xkf linux-$pkgver.tar.xz
+:end build

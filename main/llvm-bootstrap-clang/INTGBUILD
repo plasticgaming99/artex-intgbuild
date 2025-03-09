@@ -1,6 +1,6 @@
 packagename = clang
 description = C Compiler build on LLVM
-version = 19.1.7
+version = 20.1.0
 depends = llvm-libs
 source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
 
