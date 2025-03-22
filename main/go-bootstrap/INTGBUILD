@@ -1,0 +1,48 @@
+packagename = go
+version = 1.24.1
+description = good language
+lisence = BSD-3-Clause
+architecture = x86_64
+
+build:
+zsh -c "git clone --depth 1 -b release-branch.go1.4 https://go.googlesource.com/go go1.4 || true"
+zsh -c "git clone --depth 1 -b release-branch.go1.17 https://go.googlesource.com/go go1.17 || true"
+zsh -c "git clone --depth 1 -b release-branch.go1.20 https://go.googlesource.com/go go1.20 || true"
+zsh -c "git clone --depth 1 -b release-branch.go1.22 https://go.googlesource.com/go go1.22 || true"
+zsh -c "git clone --depth 1 -b release-branch.go1.24 https://go.googlesource.com/go go1.24 || true"
+
+cd go1.4/src
+./make.bash
+cd ../../
+
+export GOROOT_BOOTSTRAP=$pwd/go1.4
+cd go1.17/src
+./make.bash
+cd ../../
+
+export GOROOT_BOOTSTRAP=$pwd/go1.17
+cd go1.20/src
+./make.bash
+cd ../../
+
+export GOROOT_BOOTSTRAP=$pwd/go1.20
+cd go1.22/src
+./make.bash
+cd ../../
+
+export GOROOT_BOOTSTRAP=$pwd/go1.22
+cd go1.24/src
+./make.bash
+cd ../../
+
+:end build
+
+package:
+install -Dm644 $srcdir/go1.24/LICENSE $pkgdir/usr/share/licenses/go/LICENSE
+install -Dm644 $srcdir/go1.24/VERSION $pkgdir/usr/lib/go/go.env
+cd $srcdir/go1.24
+cp -a bin pkg src lib misc api test  $pkgdir/usr/bin/go
+ln -sf /usr/lib/go/bin/go $pkgdir/usr/bin/go
+ln -sf /usr/lib/go/bin/gofmt $pkgdir/usr/bin/gofmt
+ln -sf /usr/share/doc/go $pkgdir/usr/lib/go/doc
+:end package

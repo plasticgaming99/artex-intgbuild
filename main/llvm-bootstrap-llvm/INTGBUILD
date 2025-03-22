@@ -11,17 +11,22 @@ depends = llvm-libunwind
 depends = compiler-rt
 
 build:
+//export CXXFLAGS+=-I$srcdir/llvm-project-$pkgver.src/llvm/include
+//export CXXFLAGS+=-I$srcdir/llvm-project-$pkgver.src/libcxx/include
 cd $srcdir
 bsdtar -xvkf llvm-project-$pkgver.src.tar.xz
 cd llvm-project-$pkgver.src
 mkdir -p build
 cd build
 cmake ../llvm -G Ninja \
+-DCMAKE_CROSSCOMPILE=ON \
 -DLLVM_ENABLE_PIC=ON \
 -DCMAKE_SYSTEM_NAME=Linux \
--DLLVM_TARGET_TRIPLE=x86_64-pc-linux-musl \
--DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-pc-linux-musl \
+-DLLVM_TARGET_TRIPLE=x86_64-unknown-linux-musl \
+-DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-unknown-linux-musl \
+-DLLVM_RUNTIME_TARGET_TRIPLE=x86_64-unknown-linux-musl \
 -DLLVM_ENABLE_PROJECTS=llvm;polly \
+-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;compiler-rt \
 -DCMAKE_BUILD_TYPE=Release \
 -DCMAKE_C_COMPILER=clang \
 -DCMAKE_CXX_COMPILER=clang++ \

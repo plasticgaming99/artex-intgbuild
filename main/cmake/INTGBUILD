@@ -16,19 +16,20 @@ build:
 cd $srcdir
 bsdtar -xvf cmake-$pkgver.tar.gz
 cd cmake-$pkgver
-//zsh -c "./bootstrap --prefix=/usr"
+./bootstrap --prefix=/usr CC=clang CXX=clang++
 //make
-mkdir -p build
-cd build
-cmake ../ -G Ninja \
--DUSE_LIBIDN2=OFF \
--DCmake_BUILD_LTO=ON
-samu
+//mkdir -p build
+//cd build
+//cmake ../ -G Ninja \
+//-DUSE_LIBIDN2=OFF \
+//-DCmake_BUILD_LTO=ON
+//samu
 :end build
 
 package:
-cd $srcdir/cmake-$pkgver/build
+cd $srcdir/cmake-$pkgver
 export DESTDIR=$pkgdir
-samu install
+make install
+//samu install
 install -Dm644 $srcdir/cmake-$pkgver/Copyright.txt $pkgdir/usr/share/licenses/cmake/Copyright.txt
 :end package

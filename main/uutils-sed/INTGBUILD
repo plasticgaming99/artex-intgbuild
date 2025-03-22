@@ -1,4 +1,4 @@
-packagename = sed
+packagename = uutils-sed
 version = git
 license = MIT
 architecture = x86_64
@@ -18,6 +18,6 @@ cargo build --release --target x86_64-unknown-linux-musl
 
 package:
 cd $srcdir/findutils
-install -Dm755 $srcdir/sed/target/x86_64-unknown-linux-musl/release/sed $pkgdir/usr/bin/sed
+install -Dm755 $srcdir/sed/target/x86_64-unknown-linux-musl/release/sedapp $pkgdir/usr/bin/sed
 install -Dm644 $srcdir/sed/LICENSE $pkgdir/usr/share/licenses/uu-sed/LICENSE
 :end package

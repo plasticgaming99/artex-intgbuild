@@ -1,0 +1,17 @@
+packagename = linux
+version = 6.13.7
+license = GPL-2.0-only
+
+source = https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$pkgver.tar.xz
+
+build:
+bsdtar -xkf linux-$pkgver.tar.xz
+cd linux-$pkgver
+make headers
+find usr/include -type f ! -name '*.h' -delete
+:end build
+
+package:
+cd $srcdir/linux-$pkgver
+cp -r usr/include $pkgdir/usr
+:end package
