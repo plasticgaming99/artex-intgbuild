@@ -2,52 +2,30 @@ packagename = musl
 version = 1.2.5
 license = MIT
 architecture = x86_64
-description = An Efficient standard c library.
+description = An Efficient standard c library. Chimera-ified.
 url = https://musl.libc.org
-//source = https://git.musl-libc.org/cgit/musl/snapshot/musl-61399d4bd02ae1ec03068445aa7ffe9174466bfd.tar.gz
 source = https://git.musl-libc.org/cgit/musl/snapshot/musl-dd1e63c3638d5f9afb857fccf6ce1415ca5f1b8b.tar.gz
 source = https://github.com/microsoft/mimalloc/archive/refs/tags/v2.1.7.tar.gz
-//source = https://github.com/google/tcmalloc/archive/refs/heads/master.tar.gz
-
-source = https://github.com/chimera-linux/cports/raw/refs/heads/master/main/musl/files/mimalloc-verify-syms.sh
-source = https://github.com/chimera-linux/cports/raw/refs/heads/master/main/musl/files/mimalloc.c
-//source = https://github.com/abseil/abseil-cpp/archive/refs/heads/master.tar.gz
 
 build:
-export CFLAGS=-O3 -march=skylake -mtune=generic -flto=thin
-export LDFLAGS=-O3 -march=skylake -mtune=generic -flto=thin -rtlib=compiler-rt -unwindlib=libunwind
-
 cd $srcdir
 bsdtar -xf musl-dd1e63c3638d5f9afb857fccf6ce1415ca5f1b8b.tar.gz
 mv musl-dd1e63c3638d5f9afb857fccf6ce1415ca5f1b8b musl-$pkgver
-//bsdtar -xf tcmalloc-master.tar.gz
 bsdtar -xf ./mimalloc-2.1.7.tar.gz
 mv $srcdir/mimalloc-2.1.7 $srcdir/musl-$pkgver/mimalloc
-//mv $srcdir/tcmalloc-master $srcdir/musl-$pkgver/tcmalloc
-//bsdtar -xf abseil-cpp-master.tar.gz
 cd $srcdir/musl-$pkgver
-cp $srcdir/mimalloc.c $srcdir/musl-$pkgver/mimalloc/src/mimalloc.c
-cp $srcdir/mimalloc-verify-syms.sh $srcdir/musl-$pkgver
+cp $intgroot/files/mimalloc-verify-syms.sh $srcdir/musl-$pkgver/
+cp $intgroot/files/mimalloc.c $srcdir/musl-$pkgver/mimalloc/src/mimalloc.c
+cp $intgroot/files/mimalloc-verify-syms.sh $srcdir/musl-$pkgver
 rm -f $srcdir/musl-$pkgver/src/string/x86_64/memcpy.s
-//mv $srcdir/abseil-cpp-master ./abseil
 
-patch -Np1 -i ../../0001-implement-necessary-bits-for-musl-integration.patch
-patch -Np1 -i ../../0001-plumb-in-support-for-externally-provided-allocator-l.patch
-patch -Np1 -i ../../default-locpath.patch
-patch -Np1 -i ../../fix-bind-textdomain-codeset.patch
-patch -Np1 -i ../../memcpy.patch
-patch -Np1 -i ../../lto.patch
-patch -Np1 -i ../../libcc-compiler-rt.patch
-//patch -Np1 -i ../../tcmalloc-include-fix.patch
-//patch -Np1 -i ../../musl-c11.patch
-patch -Np1 -i ../../mimalloc-tweak-options.patch
-patch -Np1 -i ../../mimalloc-errno.patch
+zsh -c "find ../../patches | xargs -L 1 patch -Np1 -i || true"
 
 cd $srcdir/musl-$pkgver
 
 ./configure --prefix=/usr --with-malloc=external
 export EXTRA_OBJ=$srcdir/musl-$pkgver/src/malloc/external/mimalloc.o
-make -j8
+make
 :end build
 
 package:
@@ -56,7 +34,18 @@ export DESTDIR=$pkgdir
 make install
 mkdir -p $pkgdir/usr/bin
 cd $pkgdir
-ln -sf ./usr/lib/ld-musl-x86_64.so.1 ./usr/bin/ldd
+mv $pkgdir/lib/ld-musl-x86_64.so.1 $pkgdir/usr/lib
+rmdir $pkgdir/lib
+ln -sf /usr/lib/ld-musl-x86_64.so.1 ./usr/bin/ldd
 cd $srcdir/musl-$pkgver
 install -Dm644 $srcdir/musl-$pkgver/COPYRIGHT $pkgdir/usr/share/licenses/musl/COPYRIGHT
+
+cd $intgroot/files
+${CC} ${CFLAGS} ${LDFLAGS} getent.c -o $pkgdir/usr/lib/getent
+${CC} ${CFLAGS} ${LDFLAGS} getconf.c -o $pkgdir/usr/lib/getconf 
+${CC} ${CFLAGS} ${LDFLAGS} iconv.c -o $pkgdir/usr/lib/iconv
+
+install -Dm644 getent.1 $pkgdir/usr/share/man/man1/getent.1
+install -Dm644 getconf.1 $pkgdir/usr/share/man/man1/getconf.1
+ln -sv true $pkgdir/usr/bin/ldconfig
 :end package

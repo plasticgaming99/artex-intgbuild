@@ -1,0 +1,10 @@
+packagename = make
+description = mimic gnu make with wrapping kati and samurai
+version = 0
+
+depends = kati
+depends = samurai
+
+package:
+install -Dm755 $intgroot/make $pkgdir/usr/bin/make
+:end package

@@ -1,0 +1,8 @@
+# generated with buildintegra with go1.23.5
+package = lld
+version = 19.1.7
+release = 1
+license = Apache-2.0 with LLVM-exceptions
+architecture = x86_64
+description = A package.
+url = 

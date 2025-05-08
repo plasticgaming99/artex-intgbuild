@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+# make_wrapper.sh: POSIX-compliant wrapper to forward '='-options to ckati and other args to samu
+
+# Initialize variables
+ckati_opts=""
+samu_args=""
+
+# Parse all command-line arguments
+for arg in "$@"; do
+  if printf '%s' "$arg" | grep -q '='; then
+    # Contains '=' → option for ckati
+    ckati_opts="$ckati_opts $arg"
+  else
+    # No '=' → argument for samu (option or target)
+    samu_args="$samu_args $arg"
+  fi
+done
+
+# Trim leading spaces
+ckati_opts="$(printf '%s' "$ckati_opts" | sed 's/^ *//')"
+samu_args="$(printf '%s' "$samu_args" | sed 's/^ *//')"
+
+ckati --ninja $ckati_opts
+
+# Invoke samu (with remaining args)
+samu $samu_args

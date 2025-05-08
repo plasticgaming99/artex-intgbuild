@@ -29,6 +29,7 @@ install -Dm644 $srcdir/ncurses-snapshots/AUTHORS $pkgdir/usr/share/licenses/ncur
 :end package
 
 package ncurses-terminfo:
+packagename = ncurses-terminfo
 mkdir -p $pkgdir/usr/share
 mv $srcdir/terminfo $pkgdir/usr/share/terminfo
 

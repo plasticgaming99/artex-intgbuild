@@ -1,0 +1,95 @@
+packagename = llvm-bootstrap
+license = Apache-2.0-with-LLVM-exceptions
+version = 20.1.3
+description = mmm chimera linux is very good, a minimal llvm/clang
+
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
+
+conflicts = llvm
+conflicts = llvm-libunwind
+conflicts = lld
+conflicts = bolt
+conflicts = clang
+conflicts = compiler-rt
+conflicts = openmp
+conflicts = polly
+
+build:
+export CFLAGS=-O2 -fPIC
+export CXXFLAGS=-O2 -fPIC
+export LDFLAGS=-O1 -Wl,--as-needed,-rpath,/usr/lib/llvm-bootstrap/lib
+cd $srcdir
+bsdtar -xvkf llvm-project-$pkgver.src.tar.xz
+cd llvm-project-$pkgver.src
+mkdir -p build
+cd build
+//export LD_LIBRARY_PATH=/home/plastek/artex-intgbuild/main/llvm-bootstrap/source/llvm-project-20.1.0.src/build/lib
+//echo ${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=$srcdir/llvm-project-$pkgver.src/build/lib
+cmake ../llvm -G Ninja \
+-DCMAKE_INSTALL_PREFIX=/usr/lib/llvm-bootstrap \
+-DLLVM_HOST_TRIPLE=x86_64-unknown-linux-musl \
+-DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-unknown-linux-musl \
+-DLLVM_TARGET_ARCH=X86_64 \
+-DLLVM_ENABLE_PIC=ON \
+-DLLVM_ENABLE_PROJECTS="llvm;clang;lld" \
+-DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind;compiler-rt" \
+-DLLVM_ENABLE_LIBCXX=ON \
+-DLLVM_ENABLE_LLD=ON \
+-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
+-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_C_COMPILER=clang \
+-DCMAKE_CXX_COMPILER=clang++ \
+-DLLVM_ENABLE_COMPILER_RT=ON \
+-DLLVM_ENABLE_LLVM_UNWINDER=ON \
+-DLLVM_ENABLE_LTO=None \
+-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
+-DLLVM_ENABLE_FFI=OFF \
+-DLLVM_ENABLE_RTTI=ON \
+-DCMAKE_SKIP_RPATH=ON \
+-DLLVM_INCLUDE_TESTS=OFF \
+-DLLVM_INCLUDE_BENCHMARKS=OFF \
+-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+-DCLANG_DEFAULT_RTLIB=compiler-rt \
+-DCLANG_DEFAULT_UNWINDLIB=libunwind \
+-DCLANG_CONFIG_FILE_SYSTEM_DIR=/etc/clang \
+-DLLVM_ENABLE_BINDINGS=ON \
+-DLLVM_INSTALL_UTILS=ON \
+-DLLVM_BUILD_LLVM_DYLIB=ON \
+-DLLVM_LINK_LLVM_DYLIB=ON \
+-Wno-dev \
+-DLIBCXX_HAS_MUSL_LIBC=ON \
+-DLIBCXX_CXX_ABI=libcxxabi \
+-DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=OFF \
+-DLIBCXX_ENABLE_SHARED=ON \
+-DLIBCXX_USE_COMPILER_RT=ON \
+-DLIBCXX_HARDENING_MODE=fast \
+-DLIBCXX_ENABLE_FILESYSTEM=ON \
+-DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+-DLIBCXXABI_ENABLE_STATIC_UNWINDER=OFF \
+-DLIBCXXABI_USE_COMPILER_RT=ON \
+-DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
+-DLIBUNWIND_USE_COMPILER_RT=ON \
+-DLLVM_ENABLE_LIBXML2=OFF \
+-DLLVM_ENABLE_LIBEDIT=OFF \
+-DLLVM_ENABLE_LIBPFM=OFF \
+-DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+-DCOMPILER_RT_BUILD_XRAY=OFF \
+-DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+-DCOMPILER_RT_BUILD_MEMPROF=OFF \
+-DCOMPILER_RT_BUILD_CTX_PROFILE=OFF
+samu
+:end build
+
+package llvm-bootstrap:
+cd $srcdir/llvm-project-$pkgver.src/build
+export DESTDIR=$pkgdir
+samu install
+samu install-runtimes
+install -Dm644 $srcdir/llvm-project-$pkgver.src/LICENSE.TXT $pkgdir/usr/share/licenses/llvm-bootstrap/LICENSE
+cd $pkgdir/usr/lib/llvm-bootstrap/lib/x86_64-unknown-linux-musl
+zsh -c "mv * .."
+cd ..
+rmdir x86_64-unknown-linux-musl
+:end package

@@ -6,10 +6,10 @@ source = git https://github.com/midipix-project/slibtool
 build:
 cd slibtool
 ./configure --prefix=/usr
-smake -j8
+make -j8
 :end build
 
 package:
-cd $srcdir
-smake install DESTDIR=$pkgdir
+cd $srcdir/slibtool
+make install DESTDIR=$pkgdir
 :end package

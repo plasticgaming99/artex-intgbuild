@@ -1,0 +1,12 @@
+#mtree
+/set type=file uid=0 gid=0 mode=644
+/. time=1739269435.0 mode=755 type=dir
+./.PACKAGE time=1739269435.772388898 size=182 sha256digest=f87e46ba34b5899cd530b29719dc12a66bebd508c65dd3dbba3b83bd3b0cc3cf
+./usr time=1739269435.0 mode=755 type=dir
+/set mode=777
+./usr/bin time=1739269435.0 mode=755 type=dir
+./usr/bin/ld.lld time=1739269435.0 type=link link=lld
+./usr/bin/ld64.lld time=1739269435.0 type=link link=lld
+./usr/bin/lld time=1739267340.0 mode=755 size=6742912 sha256digest=80b9f3e52bedc7cbcfa26c2471c00e00d9c97edf97d17f288b87a77fc9058ec2
+./usr/bin/lld-link time=1739269435.0 type=link link=lld
+./usr/bin/wasm-ld time=1739269435.0 type=link link=lld

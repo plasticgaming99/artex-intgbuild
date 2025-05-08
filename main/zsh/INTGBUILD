@@ -92,7 +92,9 @@ make
 
 package:
 cd $srcdir/zsh
-export DESTDIR=$pkgdir
+export DESTDIR=$pkgdir/
 make install
+cd $pkgdir/usr/bin
+ln -sf zsh zsh-5.9.0.1-dev
 install -Dm644 $srcdir/zsh/LICENCE $pkgdir/usr/share/licenses/zsh/LICENCE
 :end package

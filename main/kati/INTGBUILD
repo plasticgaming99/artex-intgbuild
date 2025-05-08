@@ -1,0 +1,18 @@
+packagename = kati
+version = git
+description = GNU Make Clone
+license = Apache-2.0
+
+source = git https://github.com/google/kati
+
+build:
+cd kati
+zsh -c "patch -Np1 -i $intgroot/fix-include.patch || true"
+make ckati
+:end build
+
+package:
+install -Dm755 $srcdir/kati/ckati $pkgdir/usr/bin/ckati
+install -Dm644 $srcdir/kati/LICENSE $pkgdir/usr/share/licenses/kati/LICENSE
+install -Dm644 $srcdir/kati/AUTHORS $pkgdir/usr/share/licenses/kati/AUTHORS
+:end package

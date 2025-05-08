@@ -1,0 +1,13 @@
+packagename = gettext-tiny
+version = git
+source = git https://github.com/sabotage-linux/gettext-tiny
+
+build:
+cd gettext-tiny
+make LIBINTL=musl prefix=/usr
+:end build
+
+package:
+cd $srcdir/gettext-tiny
+make install LIBINTL=musl prefix=/usr DESTDIR=$pkgdir
+:end package

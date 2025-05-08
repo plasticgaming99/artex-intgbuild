@@ -1,0 +1,48 @@
+packagename = musl
+version = 1.2.5
+license = MIT
+architecture = x86_64
+description = An Efficient standard c library.
+url = https://musl.libc.org
+//source = https://git.musl-libc.org/cgit/musl/snapshot/musl-61399d4bd02ae1ec03068445aa7ffe9174466bfd.tar.gz
+source = https://git.musl-libc.org/cgit/musl/snapshot/musl-dd1e63c3638d5f9afb857fccf6ce1415ca5f1b8b.tar.gz
+source = https://github.com/microsoft/mimalloc/archive/refs/tags/v2.1.7.tar.gz
+//source = https://github.com/google/tcmalloc/archive/refs/heads/master.tar.gz
+
+source = https://github.com/chimera-linux/cports/raw/refs/heads/master/main/musl/files/mimalloc-verify-syms.sh
+source = https://github.com/chimera-linux/cports/raw/refs/heads/master/main/musl/files/mimalloc.c
+//source = https://github.com/abseil/abseil-cpp/archive/refs/heads/master.tar.gz
+
+build:
+cd $srcdir
+bsdtar -xf musl-dd1e63c3638d5f9afb857fccf6ce1415ca5f1b8b.tar.gz
+mv musl-dd1e63c3638d5f9afb857fccf6ce1415ca5f1b8b musl-$pkgver
+//bsdtar -xf tcmalloc-master.tar.gz
+bsdtar -xf ./mimalloc-2.1.7.tar.gz
+mv $srcdir/mimalloc-2.1.7 $srcdir/musl-$pkgver/mimalloc
+//mv $srcdir/tcmalloc-master $srcdir/musl-$pkgver/tcmalloc
+//bsdtar -xf abseil-cpp-master.tar.gz
+cd $srcdir/musl-$pkgver
+cp $srcdir/mimalloc.c $srcdir/musl-$pkgver/mimalloc/src/mimalloc.c
+cp $srcdir/mimalloc-verify-syms.sh $srcdir/musl-$pkgver
+rm -f $srcdir/musl-$pkgver/src/string/x86_64/memcpy.s
+//mv $srcdir/abseil-cpp-master ./abseil
+
+patch -Np1 -i ../../libcc-compiler-rt.patch
+
+cd $srcdir/musl-$pkgver
+
+./configure --prefix=/usr --with-malloc=mallocng
+make -j8
+:end build
+
+package:
+cd $srcdir/musl-$pkgver
+export DESTDIR=$pkgdir
+make install
+mkdir -p $pkgdir/usr/bin
+cd $pkgdir
+ln -sf /usr/lib/ld-musl-x86_64.so.1 ./usr/bin/ldd
+cd $srcdir/musl-$pkgver
+install -Dm644 $srcdir/musl-$pkgver/COPYRIGHT $pkgdir/usr/share/licenses/musl/COPYRIGHT
+:end package

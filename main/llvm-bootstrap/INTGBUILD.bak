@@ -1,0 +1,80 @@
+packagename = llvm-bootstrap
+license = Apache-2.0-with-LLVM-exceptions
+version = 20.1.0
+
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
+
+conflicts = llvm
+conflicts = llvm-libunwind
+conflicts = lld
+conflicts = bolt
+conflicts = clang
+conflicts = compiler-rt
+conflicts = openmp
+conflicts = polly
+
+build:
+export CFLAGS="-fPIC"
+export CXXFLAGS="-fPIC"
+export LDFLAGS=""
+cd $srcdir
+bsdtar -xvkf llvm-project-$pkgver.src.tar.xz
+cd llvm-project-$pkgver.src
+mkdir -p build
+cd build
+cmake ../llvm -G Ninja \
+-DCMAKE_BOOTSTRAP=ON \
+-DCLANG_ENABLE_BOOTSTRAP=ON \
+-DLLVM_TARGET_TRIPLE=x86_64-unknown-linux-musl \
+-DLLVM_TARGET_RUNTIME_TRIPLE=x86_64-unknown-linux-musl \
+-DLLVM_ENABLE_PIC=ON \
+-DCMAKE_SYSTEM_PROCESSOR=x86_64 \
+-DLLVM_ENABLE_PROJECTS="llvm;clang;clang-tools-extra;bolt;lld;polly;mlir" \
+-DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind;compiler-rt;openmp" \
+-DCMAKE_CXX_STANDARD=17 \
+-DLLVM_ENABLE_LIBCXX=ON \
+-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
+-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_C_COMPILER=clang \
+-DCMAKE_CXX_COMPILER=clang++ \
+-DLLVM_ENABLE_COMPILER_RT=ON \
+-DLLVM_ENABLE_LLVM_UNWINDER=ON \
+-DLLVM_ENABLE_LTO=Thin \
+-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DLLVM_ENABLE_FFI=OFF \
+-DLLVM_ENABLE_RTTI=ON \
+-DCMAKE_SKIP_RPATH=ON \
+-DLLVM_INCLUDE_TESTS=OFF \
+-DLLVM_INCLUDE_BENCHMARKS=OFF \
+-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+-DCLANG_DEFAULT_RTLIB=compiler-rt \
+-DCLANG_CONFIG_FILE_SYSTEM_DIR=/etc/clang \
+-DLLVM_ENABLE_BINDINGS=ON \
+-DLLVM_INSTALL_UTILS=ON \
+-DLLVM_BUILD_LLVM_DYLIB=ON \
+-DLLVM_LINK_LLVM_DYLIB=ON \
+-Wno-dev \
+-DLIBCXX_HAS_MUSL_LIBC=ON \
+-DLIBCXX_CXX_ABI=libcxxabi \
+-DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=OFF \
+-DLIBCXX_ENABLE_SHARED=ON \
+-DLIBCXX_USE_COMPILER_RT=ON \
+-DLIBCXX_HARDENING_MODE=fast \
+-DLIBCXX_ENABLE_FILESYSTEM=ON \
+-DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+-DLIBCXXABI_ENABLE_STATIC_UNWINDER=OFF \
+-DLIBCXXABI_USE_COMPILER_RT=ON \
+-DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
+-DLIBUNWIND_USE_COMPILER_RT=ON
+samu runtimes
+samu
+:end build
+
+package llvm-bootstrap:
+cd $srcdir/llvm-project-$pkgver.src/build
+export DESTDIR=$pkgdir
+samu install
+install -d $pkgdir/usr/lib/bfd-plugins
+install -Dm644 $srcdir/llvm-project-$pkgver.src/LICENSE.TXT $pkgdir/usr/share/licenses/llvm-libs/LICENSE
