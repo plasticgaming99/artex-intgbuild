@@ -49,13 +49,13 @@ zsh Util/preconfig
 --enable-pcre \
 --enable-gdbm \
 --enable-multibyte \
---with-tcsetpgrp \
+--with-tcsetprgp \
 --enable-readnullcmd=pager
 
 make
 cd Test
 export ZTST_CONTINUE=1
-zsh -c "make test || true"
+$ make test || true
 cd ..
 
 export CFLAGS-=-fcs-profile-generate -fprofile-update=atomic
@@ -65,8 +65,8 @@ export LDFLAGS-=-mllvm -vp-counters-per-site=2048
 export CFLAGS+=-fprofile-use
 export LDFLAGS+=-fprofile-use
 
-zsh -c "find . -name '*.profraw' | xargs -i llvm-profdata merge -sparse {} -o {}.profdata"
-zsh -c "llvm-profdata merge *.profdata -o default.profdata"
+$ find . -name '*.profraw' | xargs -i llvm-profdata merge -sparse {} -o {}.profdata
+$ llvm-profdata merge *.profdata -o default.profdata
 cp default.profdata Src/
 cp default.profdata Src/Zle
 cp default.profdata Src/Modules
@@ -92,9 +92,7 @@ make
 
 package:
 cd $srcdir/zsh
-export DESTDIR=$pkgdir/
-make install
+make DESTDIR="$pkgdir/" install
 cd $pkgdir/usr/bin
-ln -sf zsh zsh-5.9.0.1-dev
 install -Dm644 $srcdir/zsh/LICENCE $pkgdir/usr/share/licenses/zsh/LICENCE
 :end package

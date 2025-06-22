@@ -7,10 +7,15 @@ source = https://github.com/void-linux/musl-fts/archive/refs/tags/v1.2.7.tar.gz
 
 build:
 cd $srcdir
-tar -xf musl-fts-1.2.7.tar.gz
-cd musl-fts-1.2.7
+tar -xf musl-fts-$pkgver.tar.gz
+cd musl-fts-$pkgver
 ./bootstrap.sh
+./configure --prefix=/usr
+make
 :end build
 
 package:
+cd $srcdir/musl-fts-$pkgver
+make install DESTDIR=$pkgdir
+install -Dm644 $srcdir/musl-fts-$pkgver/COPYING /usr/share/licences/musl-fts/COPYING
 :end package

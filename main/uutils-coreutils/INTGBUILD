@@ -10,18 +10,23 @@ depends = musl
 
 builddeps = rust
 builddeps = cargo
+builddeps = patchelf
 
 build:
+export RUSTONIG_DYNAMIC_LIBONIG=1
+export RUSTFLAGS+=-C target-feature=-crt-static -C panic=abort
 cd $srcdir/coreutils
-
-cargo build --release --target x86_64-unknown-linux-musl --features feat_os_unix_musl
+cargo build --release --features feat_os_unix -Z build-std=std,panic_abort,core,alloc
+clang -nostdlib -shared -Wl,--whole-archive /usr/lib/libunwind.a -Wl,--no-whole-archive -Wl,-soname,uutils-libunwind.so.1 -o $srcdir/uutils-libunwind.so.1
+patchelf --replace-needed libgcc_s.so.1 uutils-libunwind.so.1 $srcdir/coreutils/target/release/coreutils
 :end build
 
 package:
 cd $srcdir/coreutils
-install -Dm755 $srcdir/coreutils/target/x86_64-unknown-linux-musl/release/coreutils $pkgdir/usr/bin/coreutils
+install -Dm755 $srcdir/coreutils/target/release/coreutils $pkgdir/usr/bin/coreutils
+install -Dm755 $srcdir/uutils-libunwind.so.1 $pkgdir/usr/lib/uutils-libunwind.so.1
 install -Dm644 $srcdir/coreutils/LICENSE $pkgdir/usr/share/licenses/uu-coreutils/LICENSE
 
 cd $pkgdir/usr/bin
-zsh -c "./coreutils --list | xargs -L 1 ln -sf -T coreutils "
+LD_LIBRARY_PATH=$pkgdir/usr/lib zsh -c "./coreutils --list | xargs -L 1 ln -sf -T coreutils "
 :end package

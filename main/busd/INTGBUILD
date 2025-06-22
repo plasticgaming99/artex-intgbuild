@@ -1,0 +1,23 @@
+packagename = busd
+version = git
+description = D-Bus (broker) implementation in Rust
+license = MIT
+architecture = x86_64
+
+source = git https://github.com/dbus2/busd
+
+build:
+//prepare:
+cd $srcdir/busd
+cargo fetch --target=x86_64-unknown-linux-musl --locked
+//:end prepare
+
+//build:
+cd $srcdir/busd
+cargo build --frozen --release
+:end build
+
+package:
+install -Dm644 $srcdir/busd/LICENSE-MIT $pkgdir/usr/share/licenses/busd/LICENSE-MIT
+install -Dm755 $srcdir/busd/target/release/busd $pkgdir/usr/bin/busd
+:end package

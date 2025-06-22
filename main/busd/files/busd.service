@@ -1,0 +1,8 @@
+[info]
+description = "Dbus(broker) implemantation in Rust"
+
+[service]
+type = "process"
+command = "busd"
+before = recovery.target
+required_by = "multi-user.target"
