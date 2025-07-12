@@ -1,0 +1,24 @@
+packagename = oksh
+version = git
+license = PD
+architecture = x86_64
+description = Portable OpenBSD ksh based on pdksh
+source = git https://github.com/ibara/oksh
+source = git https://github.com/shellspec/shellbench
+
+depends = libcurses
+
+build:
+cd $srcdir/oksh
+
+export LDFLAGS+=-L$intgroot/../netbsd-curses/package/usr/lib
+
+./configure --prefix=/usr CC=clang LD=ld.lld
+make
+:end build
+
+package:
+cd $srcdir/oksh
+make DESTDIR="$pkgdir/" install
+install -Dm644 $srcdir/oksh/LEGAL $pkgdir/usr/share/licenses/oksh/LEGAL
+:end package

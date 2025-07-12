@@ -46,6 +46,7 @@ install -Dm755 gzip -t $pkgdir/usr/bin/
 :end gzip
 
 package chimera-m4:
+provides = m4
 cd $srcdir/chimerautils-14.2.1/build/src.freebsd/m4
 install -Dm755 m4 -t $pkgdir/usr/bin/
 :end package

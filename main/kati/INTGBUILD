@@ -7,8 +7,8 @@ source = git https://github.com/google/kati
 
 build:
 cd kati
-zsh -c "patch -Np1 -i $intgroot/fix-include.patch || true"
-make ckati
+$ patch -Np1 -i $intgroot/fix-include.patch || true
+make
 :end build
 
 package:

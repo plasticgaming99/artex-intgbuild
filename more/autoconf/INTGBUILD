@@ -1,0 +1,22 @@
+packagename = autoconf
+version = 2.72
+description = A GNU Autoconf, part of Autotools
+license = GPL-2.0-or-later
+
+source = https://ftp.gnu.org/pub/gnu/${pkgname}/autoconf-$pkgver.tar.xz
+
+build:
+cd $srcdir
+tar -xkf autoconf-$pkgver.tar.xz
+cd autoconf-$pkgver
+./configure --prefix=/usr
+make
+:end build
+
+package:
+cd $srcdir/autoconf-$pkgver
+make install DESTDIR=$pkgdir
+install -Dm644 COPYING /usr/share/licenses/autoconf/COPYING
+install -Dm644 COPYING.EXCEPTION /usr/share/licenses/autoconf/COPYING.EXCEPTION
+rm -f "$pkgdir"/usr/share/info/standards.info
+:end package

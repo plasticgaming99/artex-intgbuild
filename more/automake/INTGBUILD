@@ -1,0 +1,21 @@
+packagename = automake
+version = 1.18
+
+description = A GNU Automake, part of Autotools
+license = GPL-2.0-or-later
+
+source = https://ftp.gnu.org/pub/gnu/automake/${pkgname}/automake-$pkgver.tar.xz
+
+build:
+cd $srcdir
+bsdtar -xkf automake-$pkgver.tar.xz
+cd automake-$pkgver
+./configure --prefix=/usr
+make
+:end build
+
+package:
+cd $srcdir/automake-$pkgver
+make install DESTDIR=$pkgdir
+install -Dm644 COPYING $pkgdir/usr/share/licenses/automake/COPYING
+:end package

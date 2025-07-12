@@ -1,0 +1,13 @@
+packagename = musl-meta
+description = musl metapackage
+
+version = 1
+
+depends = musl
+depends = musl-fts
+depends = musl-rpmatch
+depends = shimmy
+depends = musl-locales
+
+package:
+:end package

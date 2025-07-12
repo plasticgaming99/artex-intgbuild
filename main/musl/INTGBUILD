@@ -42,7 +42,6 @@ install -Dm644 $srcdir/musl-$pkgver/COPYRIGHT $pkgdir/usr/share/licenses/musl/CO
 
 cd $intgroot/files
 ${CC} ${CFLAGS} ${LDFLAGS} getent.c -o $pkgdir/usr/lib/getent
-${CC} ${CFLAGS} ${LDFLAGS} getconf.c -o $pkgdir/usr/lib/getconf 
 ${CC} ${CFLAGS} ${LDFLAGS} iconv.c -o $pkgdir/usr/lib/iconv
 
 install -Dm644 getent.1 $pkgdir/usr/share/man/man1/getent.1

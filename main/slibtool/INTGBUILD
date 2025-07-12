@@ -1,7 +1,7 @@
 packagename = slibtool
 version = git
-description = surrogate libtool
-source = git https://github.com/midipix-project/slibtool
+description = strong libtool
+source = git https://dev.midipix.org/cross/slibtool
 
 build:
 cd slibtool

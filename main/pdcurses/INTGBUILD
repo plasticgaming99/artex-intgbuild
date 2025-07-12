@@ -1,0 +1,28 @@
+packagename = pdcursesmod
+license = Other
+version = git
+
+provides = libcurses
+
+conflicts = ncurses
+
+source = git https://github.com/Bill-Gray/PDCursesMod
+
+build:
+cd $srcdir/PDCursesMod
+mkdir -p build
+cd build
+  cmake ../ -G Ninja \
+    -DPDC_DOS_BUILD=OFF \
+    -DPDC_DOSVGA_BUILD=OFF \
+    -DPDC_DOSVT_BUILD=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  samu
+cd ..
+:end build
+
+package:
+cd $srcdir/PDCursesMod
+samu
+:end package

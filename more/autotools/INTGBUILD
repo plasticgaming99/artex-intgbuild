@@ -1,0 +1,10 @@
+packagename = autotools
+description = almost autotools
+
+depends = chimera-m4
+depends = automake
+depends = autoconf
+depends = slibtool
+
+package:
+:end package

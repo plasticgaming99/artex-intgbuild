@@ -1,0 +1,44 @@
+packagename = imath
+version = git
+license = MIT
+
+source = git https://github.com/creachadair/imath
+
+provides = gmp
+
+build:
+cd $srcdir/imath
+make PREFIX=/usr CC=clang libimath.so
+:end build
+
+package:
+install -Dm755 $srcdir/imath/imcalc $pkgdir/usr/bin/imcalc
+install -Dm755 $srcdir/imath/imtest $pkgdir/usr/bin/imtest
+install -Dm755 $srcdir/imath/pi $pkgdir/usr/bin/imath-pi
+install -Dm755 $srcdir/imath/input $pkgdir/usr/bin/imath-input
+install -Dm755 $srcdir/imath/randprime $pkgdir/usr/bin/imath-randprime
+install -Dm755 $srcdir/imath/findprime $pkgdir/usr/bin/findprime
+install -Dm755 $srcdir/imath/rounding $pkgdir/usr/bin/imath-rounding
+install -Dm755 $srcdir/imath/rsakey $pkgdir/usr/bin/imath-rsakey
+install -Dm755 $srcdir/imath/bug-swap $pkgdir/usr/bin/imath-bug-swap
+install -Dm755 $srcdir/imath/bug-qread $pkgdir/usr/bin/imath-bug-qread
+install -Dm755 $srcdir/imath/basecvt $pkgdir/usr/bin/imath-basecvt
+
+install -Dm755 $srcdir/imath/libimath.so $pkgdir/usr/lib/libimath.so
+//install -Dm755 $srcdir/imath/gmp_compat.so $pkgdir/usr/lib/gmp_compat.so
+//install -Dm755 $srcdir/imath/imath.so $pkgdir/usr/lib/imath.so
+//install -Dm755 $srcdir/imath/imrat.so $pkgdir/usr/lib/imrat.so
+
+install -Dm644 $srcdir/imath/rsamath.h $pkgdir/usr/include/rsamath.h
+install -Dm644 $srcdir/imath/iprime.h $pkgdir/usr/include/iprime.h
+install -Dm644 $srcdir/imath/imrat.h $pkgdir/usr/include/imrat.h
+install -Dm644 $srcdir/imath/imdrover.h $pkgdir/usr/include/imdrover.h
+install -Dm644 $srcdir/imath/imath.h $pkgdir/usr/include/imath.h
+install -Dm644 $srcdir/imath/gmp_compat.h $pkgdir/usr/include/gmp_compat.h
+
+install -Dm644 $srcdir/imath/LICENSE $pkgdir/usr/share/licenses/LICENSE
+
+cd $pkgdir/usr/include
+ln -sf gmp_compat.h gmp.h
+ln -sf gmp_compat.so libgmp.so
+:end package

@@ -1,0 +1,18 @@
+packagename = bc
+vsersion = git
+license = BSD-3-Clause
+description = An implementation of the POSIX bc calculator with GNU extensions and dc
+
+source = git https://github.com/gavinhoward/bc
+
+build:
+cd bc
+./configure.sh --prefix=/usr
+make
+:end build
+
+package:
+cd $srcdir/bc
+DESTDIR=$pkgdir make install
+install -Dm644 $srcdir/bc/LICENSE.md $pkgdir/usr/share/licenses/bc/LICENSE
+:end package

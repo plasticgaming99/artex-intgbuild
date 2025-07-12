@@ -1,0 +1,24 @@
+packagename = util-linux
+version = git
+description = 
+architecture = x86_64
+license = GPL-2.0
+
+source = git https://github.com/util-linux/util-linux
+
+build:
+cd $srcdir/util-linux
+autoreconf -fi
+mkdir -p build
+cd build
+  meson
+  ninja
+cd ..
+:end build
+
+package:
+cd $srcdir/file/build
+export DESTDIR=$pkgdir
+make install
+install -Dm644 $srcdir/file/COPYING $pkgdir/usr/share/licenses/file/COPYING
+:end package

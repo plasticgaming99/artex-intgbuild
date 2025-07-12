@@ -1,0 +1,22 @@
+packagename = mksh
+version = git
+license = MirOS AND Unicode-DFS-2016
+architecture = x86_64
+description = Portable MirBSD ksh based on pdksh
+source = git https://github.com/MirBSD/mksh
+
+depends = libcurses
+
+build:
+cd $srcdir/mksh
+
+export LDFLAGS+=-L$intgroot/../netbsd-curses/package/usr/lib
+
+sh Build.sh -r
+:end build
+
+package:
+cd $srcdir/mksh
+install -Dm755 mksh $pkgdir/usr/bin/mksh
+install -Dm644 mksh.1 $pkgdir/usr/share/man/man1/mksh.1
+:end package

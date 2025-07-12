@@ -1,0 +1,76 @@
+packagename = polygeist
+version = git
+description = 
+license = Apache-2.0-WITH-LLVM-Exceptions
+url = https://polygeist.llvm.org
+architecture = x86_64
+
+depends = llvm18
+depends llvm19-libs
+depends = mlir18
+
+source = git https://github.com/llvm/Polygeist
+source = https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/llvm-project-18.1.8.src.tar.xz
+
+build:
+$ rmdir $srcdir/Polygeist/llvm-project || true
+bsdtar -xkf llvm-project-18.1.8.src.tar.xz
+$ ln -sf ../llvm-project-18.1.8.src $srcdir/Polygeist/llvm-project || true
+cd $srcdir/Polygeist
+  cd llvm-project
+    mkdir -p build
+    cd build
+      cmake -G Ninja ../llvm \
+        -DBUILD_SHARED=ON \
+        -DCMAKE_BUILD_RPATH=$srcdir/Polygeist/llvm-project/build/lib
+        -DLLVM_ENABLE_PROJECTS="llvm;mlir;clang;lld" \
+        -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxx;libcxxabi" \
+        -DLLVM_TARGETS_TO_BUILD="host" \
+        -DCMAKE_C_COMPILER=clang \
+        -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DLLVM_ENABLE_ASSERTIONS=ON \
+        -DLLVM_ENABLE_BINDINGS=ON \
+        -DLLVM_BUILD_LLVM_DYLIB=ON \
+        -DLLVM_LINK_LLVM_DYLIB=ON \
+        -DLLVM_ENABLE_LLVM_UNWIND=ON \
+        -DLLVM_ENABLE_LLD=ON \
+        -DLLVM_ENABLE_COMPILER_RT=ON \
+        -DLLVM_ENABLE_LIBCXX=ON \
+        -DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
+        -DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
+        -DCOMPILER_RT_USE_LLVM_UNWINDER=ON \
+        -DLIBCXX_HAS_MUSL_LIBC=ON \
+        -DLIBCXX_CXX_ABI=libcxxabi \
+        -DLIBCXX_ENABLE_SHARED=ON \
+        -DLIBCXX_USE_COMPILER_RT=ON \
+        -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
+        -DLIBCXXABI_USE_COMPILER_RT=ON \
+        -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+        -DLIBUNWIND_USE_COMPILER_RT=ON \
+        -DLIBUNWIND_ENABLE_ASSERTIONS=OFF
+      samu
+    cd ..
+  cd ..
+  mkdir -p build
+  cd build
+    cmake -G Ninja .. \
+      -DMLIR_DIR=$PWD/../llvm-project/build/lib/cmake/mlir \
+      -DCLANG_DIR=$PWD/../llvm-project/build/lib/cmake/clang \
+      -DPOLYGEIST_ENABLE_POLYMER=ON \
+      -DPOLYGEIST_POLYMER_ENABLE_ISL=ON \
+      -DPOLYGEIST_POLYMER_ENABLE_PLUTO=ON \
+      -DLLVM_TARGETS_TO_BUILD="host" \
+      -DLLVM_ENABLE_ASSERTIONS=ON \
+      -DLLVM_BUILD_LLVM_DYLIB=ON \
+      -DLLVM_LINK_LLVM_DYLIB=ON \
+      -DCMAKE_BUILD_TYPE=Release
+    samu
+  cd ..
+cd ..
+:end build
+
+package:
+export DESTDIR=$pkgdir
+
+:end package

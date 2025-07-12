@@ -1,0 +1,18 @@
+packagename = shimmy
+version = git
+description = 
+architecture = x86_64
+license = NCSA
+
+source = git https://git.adelielinux.org/adelie/shimmy
+
+build:
+cd $srcdir/shimmy
+make
+:end build
+
+package:
+cd $srcdir/shimmy
+DESTDIR=$pkgdir make install
+install -Dm644 $srcdir/shimmy/LICENSE $pkgdir/usr/share/licenses/shimmy/LICENSE
+:end package

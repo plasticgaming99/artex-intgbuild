@@ -1,0 +1,20 @@
+packagename = musl-locales
+version = git
+description = Locale program for musl libc
+
+source = git https://github.com/rilian-la-te/musl-locales
+
+build:
+cd $srcdir/musl-locales
+cmake -G Ninja \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCMAKE_POLICY_VERSION_MINIMUM=3.5
+ninja
+:end build
+
+package:
+cd $srcdir/musl-locales
+DESTDIR=$pkgdir ninja install
+install -Dm644 LICENSE.MIT $pkgdir/usr/share/licenses/musl-locales/LICENSE.MIT
+:end package
